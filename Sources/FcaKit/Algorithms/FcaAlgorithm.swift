@@ -29,6 +29,8 @@ public class FcaAlgorithm {
         return ""
     }
     
+    public init() { }
+    
     public func count(in context: FormalContext, outputFormat format: OutputFormat = .Object) -> Set<FormalConcept> {
         return concepts
     }

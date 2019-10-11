@@ -93,7 +93,13 @@ Size: 30x130, 1471 concepts
 You can build FcaKit using Xcode. If you are Linux user you can use Swift Package Manager to build. 
 
 ```
-    swift build -Xswiftc "-target" -Xswiftc "x86_64-apple-macosx10.12" -c release
+    swift build -c release
+```
+
+## Add as Dependency
+You can use FcaKit library in your swift package. Add FcaKit as dependency as in the following example.
+```
+    
 ```
 This command builds FcaKit for release and executable binary you can find in .build/release/fca. Also you can user prepared script called build which builds FcaKit and move binary to current folder.
 
