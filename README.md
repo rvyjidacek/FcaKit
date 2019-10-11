@@ -120,6 +120,13 @@ You can use FcaKit library in your swift package. Add FcaKit as dependency as in
         ]
     )
 ```
+
+When you add dependency you have to update your package using:
+
+```Swift
+    swift package update
+```
+
 This command builds FcaKit for release and executable binary you can find in .build/release/fca. Also you can user prepared script called build which builds FcaKit and move binary to current folder.
 
 ## Usage
