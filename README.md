@@ -98,7 +98,7 @@ You can build FcaKit using Xcode. If you are Linux user you can use Swift Packag
 
 ## Add as Dependency
 You can use FcaKit library in your swift package. Add FcaKit as dependency as in the following example.
-```
+```Swift
     // swift-tools-version:5.1
     // The swift-tools-version declares the minimum version of Swift required to build this package.
 
