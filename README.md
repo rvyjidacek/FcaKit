@@ -17,10 +17,10 @@ Formal concept analysis (FCA) is a principled way of deriving a concept hierarch
 ## Implemented Algorithms
 1. NextClosure
 2. UpperNeighbor
-3. Closed by One (CbO)
-4. Fast Closed by One (FCbO)
-5. Parallel Closed by One (PCbO)
-6. Parallel Fast Closed by One (PFCbO)
+3. Close by One (CbO)
+4. Fast Close by One (FCbO)
+5. Parallel Close by One (PCbO)
+6. Parallel Fast Close by One (PFCbO)
 7. ELL
 8. In-Close2
 9. In-Close4
@@ -50,7 +50,7 @@ Size: 108 x 56, 1030 concepts
 |Next Closure | 0.037s |
 |Upper Neighbor | 0.157s |
 |Closed by One | 0.033s |
-|Fast Closed by One | 0.030s |
+|Fast Close by One | 0.030s |
 |Parallel Closed by One | 0.097s |
 |Parallel Fast Closed by One | 0.047s |
 |ELL | 0.174s |
@@ -65,10 +65,10 @@ Size: 130 x 132, 5524 concepts
 |:-------------|:------------:|
 |Next Closure | 0.439s |
 |Upper Neighbor | 1.306s |
-|Closed by One | 0.498s |
-|Fast Closed by One | 0.301s |
-|Parallel Closed by One | 0.751s |
-|Parallel Fast Closed by One | 0.372s |
+|Close by One | 0.498s |
+|Fast Close by One | 0.301s |
+|Parallel Close by One | 0.751s |
+|Parallel Fast Close by One | 0.372s |
 |ELL | 1.069s |
 |In-Close2 | 0.159s |
 |In-Close4 | 0.072s |
@@ -82,9 +82,9 @@ Size: 30x130, 1471 concepts
 |Next Closure | 0.123s |
 |Upper Neighbor | 0.083s |
 |Closed by One | 0.171s |
-|Fast Closed by One | 0.069s |
-|Parallel Closed by One | 0.226s |
-|Parallel Fast Closed by One | 0.103s |
+|Fast Close by One | 0.069s |
+|Parallel Close by One | 0.226s |
+|Parallel Fast Close by One | 0.103s |
 |ELL | 0.066s |
 |In-Close2 | 0.044s |
 |In-Close4 | 0.026s |
