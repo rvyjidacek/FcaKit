@@ -28,6 +28,13 @@ public class PFCbO: FcaAlgorithm {
     private var attributeQueues: [Queue<Attribute>] = []
     private var failedAttributes: [Queue<UpdatableSet>] = []
     
+    private var yj: [BitSet] = []
+    private var k: [BitSet] = []
+    private var l: [BitSet] = []
+    private var x: [BitSet] = []
+    private var y: [BitSet] = []
+    private var b: [BitSet] = []
+    private var c: [BitSet] = []
     
     public override func count(in context: FormalContext, outputFormat format: OutputFormat = .Object) -> Set<FormalConcept> {
         self.context = context
@@ -156,19 +163,12 @@ public class PFCbO: FcaAlgorithm {
                     
                     self.fastGenerateFrom(concept: concept,
                                           attribute: attribute,
-                                          attributeSets: failedAttributes.dequeue()!, processId: id)
+                                          attributeSets: failedAttributes.dequeue()!,
+                                          processId: id)
                 }
             }
         }
     }
-    
-    private var yj: [BitSet] = []
-    private var k: [BitSet] = []
-    private var l: [BitSet] = []
-    private var x: [BitSet] = []
-    private var y: [BitSet] = []
-    private var b: [BitSet] = []
-    private var c: [BitSet] = []
     
     func fastGenerateFrom(concept: FormalConcept, attribute: Attribute, attributeSets: UpdatableSet, processId: Int) {
         store(concept: concept)

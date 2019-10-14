@@ -8,13 +8,13 @@
 
 import Foundation
 
-class InClose4: FcaAlgorithm {
+public class InClose4: FcaAlgorithm {
     
-    override var name: String {
+    override public var name: String {
         return "In-Close4"
     }
     
-    override func count(in context: FormalContext, outputFormat format: OutputFormat = .Object) -> Set<FormalConcept> {
+    override public func count(in context: FormalContext, outputFormat format: OutputFormat = .Object) -> Set<FormalConcept> {
         self.context = context
         self.concepts = Set<FormalConcept>()
         self.yj = getattributeSet()

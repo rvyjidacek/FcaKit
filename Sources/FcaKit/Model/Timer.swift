@@ -8,23 +8,23 @@
 
 import CoreFoundation
 
-class Timer {
+public class Timer {
     
     let startTime:CFAbsoluteTime
     
     var endTime:CFAbsoluteTime?
     
-    init() {
+    public init() {
         startTime = CFAbsoluteTimeGetCurrent()
     }
     
-    func stop() -> CFAbsoluteTime {
+    public func stop() -> CFAbsoluteTime {
         endTime = CFAbsoluteTimeGetCurrent()
         
         return duration!
     }
     
-    var duration:CFAbsoluteTime? {
+    public var duration:CFAbsoluteTime? {
         if let endTime = endTime {
             return endTime - startTime
         } else {

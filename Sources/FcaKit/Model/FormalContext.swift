@@ -36,6 +36,27 @@ public class FormalContext {
     
     private var values: [[Int]] = []
     
+    public init(url: URL) throws {
+        let stream = InputStream(url: url)!
+        let csv = try CSVReader(stream: stream)
+        
+        var values: [[Int]] = []
+        
+        while let row = csv.next(){
+            let intRow = row.compactMap({ Int($0) })
+            
+            if !intRow.isEmpty {
+                values.append(intRow)
+            }
+        }
+        
+        self.values = values
+        self.objects = parseObjects(from: values)
+        self.attributes = parseAttributes(from: values)
+        self.allAttributes.setAll()
+    }
+    
+    
     public init(values: [[Int]]) {
         self.values = values
         self.objects = parseObjects(from: values)

@@ -31,11 +31,11 @@ public class PCbO: FcaAlgorithm {
     public override func count(in context: FormalContext, outputFormat format: OutputFormat = .Object) -> Set<FormalConcept> {
         self.context = context
         self.concepts = []
-        x = context.attributeSet()
-        y = context.attributeSet()
-        c = context.objectSet()
-        d = context.attributeSet()
-        down = context.objectSet()
+//        x = context.attributeSet()
+//        y = context.attributeSet()
+//        c = context.objectSet()
+//        d = context.attributeSet()
+//        down = context.objectSet()
         
         let initialConcept = FormalConcept(objects: context.allObjects,
                                            attributes: context.up(objects: context.allObjects))
@@ -47,15 +47,27 @@ public class PCbO: FcaAlgorithm {
             return Queue<Attribute>()
         })
         
+        down = (0...numberOfThreads).map { _ in context.objectSet() }
+        x = (0...numberOfThreads).map { _ in context.attributeSet() }
+        y = (0...numberOfThreads).map { _ in context.attributeSet() }
+        d = (0...numberOfThreads).map { _ in context.attributeSet() }
+        c = (0...numberOfThreads).map { _ in context.objectSet() }
+        
         parallelGenerateFrom(concept: initialConcept, attribute: 0, depthLevel: 0)
         return concepts
     }
     
-    private var c: BitSet!
-    private var d: BitSet!
-    private var x: BitSet!
-    private var y: BitSet!
-    private var down: BitSet!
+    //    private var c: BitSet!
+    //    private var d: BitSet!
+    //    private var x: BitSet!
+    //    private var y: BitSet!
+    //    private var down: BitSet!
+    
+    private var down: [BitSet] = []
+    private var x: [BitSet] = []
+    private var y: [BitSet] = []
+    private var d: [BitSet] = []
+    private var c: [BitSet] = []
     
     private func parallelGenerateFrom(concept: FormalConcept, attribute: Attribute, depthLevel: UInt) {
         if stopRecursionLevel == depthLevel {
@@ -65,7 +77,13 @@ public class PCbO: FcaAlgorithm {
             return
         }
         
-       store(concept: concept)
+        let down = self.down[numberOfThreads]
+        let x = self.x[numberOfThreads]
+        let y = self.y[numberOfThreads]
+        let d = self.d[numberOfThreads]
+        let c = self.c[numberOfThreads]
+        
+        store(concept: concept)
         
         if !((concept.attributes == context?.allAttributes)) {
             for j in attribute..<context!.attributeCount {
@@ -94,15 +112,10 @@ public class PCbO: FcaAlgorithm {
             DispatchQueue.concurrentPerform(iterations: numberOfThreads) { (id) in
                 let conceptsQueue = self.conceptQueues[id]
                 let attributesQueue = self.attributeQueues[id]
-                let cbo = CbO()
                 for _  in 0..<conceptsQueue.count {
-                    let concepts = cbo.count(in: context!,
-                                             concept: conceptsQueue.dequeue()!,
-                                             attribute: attributesQueue.dequeue()!)
-                    lock.lock()
-                    self.concepts.formUnion(concepts)
-                    conceptsCount += cbo.conceptsCount
-                    lock.unlock()
+                    self.generateFrom(concept: conceptsQueue.dequeue()!,
+                                      attribute: attributesQueue.dequeue()!,
+                                      processId: id)
                 }
                 
             }
@@ -110,11 +123,17 @@ public class PCbO: FcaAlgorithm {
     }
     
     
-    func generateFrom(concept: FormalConcept, attribute: Attribute) {
+    func generateFrom(concept: FormalConcept, attribute: Attribute, processId: Int) {
         store(concept: concept)
         if concept.attributes == context!.allAttributes || attribute >= context!.attributeCount {
             return
         }
+        
+        let down = self.down[processId]
+        let x = self.x[processId]
+        let y = self.y[processId]
+        let d = self.d[processId]
+        let c = self.c[processId]
         
         for j in attribute..<context!.attributeCount {
             if !(concept.attributes.contains(j)) {
@@ -122,16 +141,16 @@ public class PCbO: FcaAlgorithm {
                 context!.down(attribute: j, into: down)
                 c.intersection(with: down)
                 context!.up(objects: c, into: d)
-
+                
                 x.addMany(0..<j)
                 x.intersection(with: concept.attributes)
-
+                
                 y.addMany(0..<j)
                 y.intersection(with: d)
                 if x == y {
                     generateFrom(concept: FormalConcept(objects: BitSet(bitset: c),
                                                         attributes: BitSet(bitset: d)),
-                                 attribute: j + 1)
+                                 attribute: j + 1, processId: processId)
                 }
             }
         }
@@ -156,6 +175,4 @@ public class PCbO: FcaAlgorithm {
         }
         return FormalConcept(objects: objects, attributes: attributes)
     }
-    
-    
 }
