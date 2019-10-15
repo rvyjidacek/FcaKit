@@ -108,7 +108,7 @@ You can use FcaKit library in your swift package. Add FcaKit as dependency as in
         name: "Application",
         platforms: [ .macOS(.v10_12), ], // This line is necessary. 
         dependencies: [
-            .package(url: "https://github.com/rvyjidacek/FcaKit.git"),
+        .package(url: "https://github.com/rvyjidacek/FcaKit.git",  from: "1.0.0"),
         ],
         targets: [
             .target(

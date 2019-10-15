@@ -14,8 +14,10 @@ public class FormalContext {
     
     public var attributeNames: [String] = []
     
+    /// Bitset array where object[x] contains set of attributes for object x.
     public var objects: [BitSet] = []
     
+    /// Bitset array where attributes[y] contains set of objects for attribute y.
     public var attributes: [BitSet] = []
     
     public var objectCount: Int{
@@ -34,6 +36,7 @@ public class FormalContext {
         return BitSet(size: objectCount, values: 0..<objectCount)
     }
     
+    /// 2D array with binary data. This value is useful for ELL algorithm.
     private var values: [[Int]] = []
     
     public init(url: URL) throws {
