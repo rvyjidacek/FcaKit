@@ -88,7 +88,7 @@ public class GreCon: BMFAlgorithm {
             S.remove(result.concept)
             
             for tuple in result.concept.cartesianProduct {
-                ///print("Insert \(tuple) to covered")
+                //print("Insert \(tuple) to covered")
                 covered.insert(tuple)
             }
             

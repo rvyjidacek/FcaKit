@@ -55,24 +55,12 @@ public class CartesianProduct: Sequence, IteratorProtocol, CustomStringConvertib
         rowsCount = a.size
         colsCount = b.size
         
-        
-        let aValues = (0..<rowsCount).filter { a.contains($0) }
-        let bValues = (0..<colsCount).filter { b.contains($0) }
-        
-        for aValue in aValues {
-            for bValue in bValues {
-                let index = tupleToIndex(tuple: (aValue, bValue))
-                values.insert(index)
-            }
-        }
-        
-        /*
         for aValue in a {
             for bValue in b {
                 let index = tupleToIndex(tuple: (aValue, bValue))
                 values.insert(index)
             }
-        }*/
+        }
         
     }
     
@@ -86,15 +74,10 @@ public class CartesianProduct: Sequence, IteratorProtocol, CustomStringConvertib
         values = BitSet(size: matrix.size.rows * matrix.size.columns)
         rowsCount = matrix.count
         colsCount = matrix.first?.count ?? 0
-        
-        //print("Matrix size: \(matrix.size), max index \(matrix.size.rows * matrix.size.columns)")
-        
+                
         for row in 0..<rowsCount {
             for col in 0..<colsCount {
                 if matrix[row][col] == 1{
-                    let index =  tupleToIndex(tuple: (row, col))
-                    //print("Index for tuple \((row, col)) is \(index)")
-                    
                     values.insert(tupleToIndex(tuple: (row, col)))
                 }
             }
@@ -102,7 +85,6 @@ public class CartesianProduct: Sequence, IteratorProtocol, CustomStringConvertib
     }
     
     public func insert(_ value: Tuple) {
-        //print("insert \(value)")
         values.insert(tupleToIndex(tuple: value))
     }
     
@@ -121,16 +103,16 @@ public class CartesianProduct: Sequence, IteratorProtocol, CustomStringConvertib
     }
     
     fileprivate func tupleToIndex(tuple: Tuple) -> Int {
-        //return tuple.row * rowsCount + tuple.col
+        return (tuple.row * colsCount) + tuple.col
         //X + Y * Width
-        return tuple.row + tuple.col * colsCount
+        //return tuple.row + tuple.col * colsCount
     }
     
     fileprivate func indexToTuple(index: Int) -> Tuple {
         //let row = index / colsCount
         //return (row, index - (rowsCount * row))
-        let col = index / colsCount
-        let row = index - (col * colsCount)
+        let row = index / colsCount
+        let col = index - (row * colsCount)
         return (row, col)
         
     }
