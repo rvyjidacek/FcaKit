@@ -36,7 +36,7 @@ public class FcaAlgorithm {
     }
     
     func store(concept: FormalConcept) {
-        //concepts.insert(concept)
+        concepts.insert(concept)
         conceptsCount += 1
     }
     

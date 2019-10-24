@@ -8,26 +8,9 @@
 
 import Foundation
 
-public class BMFAlgorithm {
-    
-    
-    func tuples(in matrix: Matrix) -> Set<Tuple> {
-        var tuples: Set<Tuple> = []
-        for row in 0..<matrix.count {
-            for col in 0..<matrix[row].count {
-                if matrix[row][col] == 1 {
-                    tuples.insert(Tuple(a: row, b: col))
-                }
-            }
-        }
-        return tuples
-    }
-}
-
-
 public class GreConD: BMFAlgorithm {
     
-    public func countBMF(of matrix: Matrix) -> Set<FormalConcept> {
+    public override func countFactors(in matrix: Matrix) -> Set<FormalConcept> {
         let context = FormalContext(values: matrix)
         var U = tuples(in: matrix)
         var F = Set<FormalConcept>()

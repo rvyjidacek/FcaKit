@@ -8,66 +8,117 @@
 
 import Foundation
 
-class GreCon: BMFAlgorithm {
+public class GreCon: BMFAlgorithm {
+
     
-    public func countBMF(of matrix: Matrix, using fcaAlgorithm: FcaAlgorithm = PFCbO()) -> [FormalConcept] {//Set<FormalConcept> {
+    public func countBMF(of matrix: Matrix, using fcaAlgorithm: FcaAlgorithm = PFCbO()) -> [FormalConcept] {
         let context = FormalContext(values: matrix)
         var S = fcaAlgorithm.count(in: context)
-//        print("\\section*{GreCon}")
-//        print("S = \(S.map({$0.latexDescription}))")
-        
         var U = tuples(in: matrix)
         
         var F = [FormalConcept]()
-    //Set<FormalConcept>()
-        //print("F = \(F.map({$0.latexDescription}))")
         let attributeConcepts = self.attributeConcepts(in: context)
         let objectConcepts = self.objectConcepts(in: context)
         let conceptsIntersection = attributeConcepts.intersection(objectConcepts)
         
-        //print("Remove attribute and object concepts")
         for concept in S {
             if conceptsIntersection.contains(concept) {
-                //print("insert \(concept.latexDescription) to F")
-                //print("remove \(concept.latexDescription) from S")
-                F.append(concept)//F.insert(concept)
+                F.append(concept)
                 S.remove(concept)
 
                 for tuple in concept.tuples {
                     U.remove(tuple)
                 }
-
-                //print("\n")
             }
         }
-        
-        //print("S = \(S.description)")
-        //print("F = \(F.description)")
-        
         while !(U.isEmpty) {
             var covered = Set<Tuple>()
             
             let result = selectMaxCover(of: U, from: S)
-//            print("Max cover concept = \(result.concept.latexDescription) cover = \(result.cover)")
-            F.append(result.concept)//F.insert(result.concept)
+            //print("Concept \(result.concept) cover \(result.cover)")
+            F.append(result.concept)
             S.remove(result.concept)
             
             for tuple in result.concept.tuples {
-                //U.remove(tuple)
                 covered.insert(tuple)
             }
-//            
-//            printLatexMatrix(tuples: U, covered: covered)
             
             for tuple in result.concept.tuples {
                 U.remove(tuple)
-                //covered.insert(tuple)
             }
             
-            //print("S = \(S.description)")
-            //print("F = \(F.description)")
+            //print("size of U = \(U.count)")
         }
         return F
+    }
+    
+    
+    var covered: CartesianProduct!
+    
+    public func countBMF2(of matrix: Matrix, using fcaAlgorithm: FcaAlgorithm = PFCbO()) -> [FormalConcept] {
+        let context = FormalContext(values: matrix)
+        var S = fcaAlgorithm.count(in: context)
+        let U = CartesianProduct(matrix: matrix)
+         
+        self.tuplesIntersection = CartesianProduct(matrix: matrix)
+        var F = [FormalConcept]()
+        let attributeConcepts = self.attributeConcepts(in: context)
+        let objectConcepts = self.objectConcepts(in: context)
+        let conceptsIntersection = attributeConcepts.intersection(objectConcepts)
+        
+        for concept in S {
+            if conceptsIntersection.contains(concept) {
+                F.append(concept)
+                S.remove(concept)
+
+                for tuple in concept.cartesianProduct {
+                    U.remove(tuple)
+                }
+            }
+        }
+        
+        self.covered = CartesianProduct(rows: matrix.size.rows, cols: matrix.size.columns)
+        
+        while !(U.isEmpty) {
+            covered.values.erase()
+            
+            let result = selectMaxCover(of: U, from: S)
+            //print("Concept \(result.concept) cover \(result.cover)")
+            F.append(result.concept)
+            S.remove(result.concept)
+            
+            for tuple in result.concept.cartesianProduct {
+                ///print("Insert \(tuple) to covered")
+                covered.insert(tuple)
+            }
+            
+            //print("size of covered = \(covered.count)")
+            
+            for tuple in result.concept.cartesianProduct {
+                U.remove(tuple)
+            }
+            //print("size of U = \(U.count)")
+        }
+        return F
+    }
+    
+    fileprivate var tuplesIntersection: CartesianProduct!
+    
+    private func selectMaxCover(of tuples: CartesianProduct, from concepts: Set<FormalConcept>) -> (concept: FormalConcept, cover: Int) {
+        var maxCoverSize = 0
+        var maxCoverConcept: FormalConcept?
+        
+        for concept in concepts {
+            tuplesIntersection.copyValues(tuples)
+            tuplesIntersection.intersection(concept.cartesianProduct)
+            let intersectionCount = tuplesIntersection.count
+            
+            if intersectionCount > maxCoverSize {
+                maxCoverSize = intersectionCount
+                maxCoverConcept = concept
+            }
+        }
+        return (maxCoverConcept!, maxCoverSize)
     }
     
     private func selectMaxCover(of tuples: Set<Tuple>, from concepts: Set<FormalConcept>) -> (concept: FormalConcept, cover: Int) {
@@ -114,9 +165,6 @@ class GreConV2: BMFAlgorithm {
         let context = FormalContext(values: matrix)
         var S = fcaAlgorithm.count(in: context)
         
-//        print("\\section*{GreCon with optimization}")
-//        print("S = \(S.map({$0.latexDescription}))")
-        
         var U = tuples(in: matrix)
         var F = [FormalConcept]()//Set<FormalConcept>()
         let attributeConcepts = self.attributeConcepts(in: context)
@@ -125,7 +173,7 @@ class GreConV2: BMFAlgorithm {
         
         for concept in S {
             if conceptsIntersection.contains(concept) {
-                F.append(concept)//F.insert(concept)
+                F.append(concept)
                 S.remove(concept)
 
                 for tuple in concept.tuples {
@@ -133,33 +181,20 @@ class GreConV2: BMFAlgorithm {
                 }
             }
         }
-        
-//        printLatexMatrix(tuples: U)
+            
         
         var sortedS = S.sorted(by: {(concept1, concept2) -> Bool in
             return (concept1.attributes.count * concept1.objects.count) > (concept2.attributes.count * concept2.objects.count)
         })
         
         while !(U.isEmpty) {
-//            var covered = Set<Tuple>()
-            
+
             let result = selectMaxCover(of: U, from: sortedS)
             
-//            print("Max cover concept = \(sortedS[result.index].latexDescription) cover = \(result.cover)")
-            F.append(sortedS[result.index])//F.insert(sortedS[result.index])
-            
-            
-            
-//            for tuple in sortedS[result.index].tuples {
-//                //U.remove(tuple)
-//                covered.insert(tuple)
-//            }
-
-//            printLatexMatrix(tuples: U, covered: covered)
+            F.append(sortedS[result.index])
             
             for tuple in sortedS[result.index].tuples {
                 U.remove(tuple)
-                //covered.insert(tuple)
             }
             
             sortedS.remove(at: result.index)

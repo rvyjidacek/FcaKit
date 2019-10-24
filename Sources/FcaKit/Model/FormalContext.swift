@@ -36,8 +36,8 @@ public class FormalContext {
         return BitSet(size: objectCount, values: 0..<objectCount)
     }
     
-    /// 2D array with binary data. This value is useful for ELL algorithm.
-    private var values: [[Int]] = []
+    /// 2D array with binary data. This value is useful for ELL algorithm of BMF
+    public var values: Matrix = []
     
     public init(url: URL) throws {
         let stream = InputStream(url: url)!

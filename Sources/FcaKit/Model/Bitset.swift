@@ -6,7 +6,7 @@ Hashable, ExpressibleByArrayLiteral {
     var wordcount = 0 // how many words are used
     var size = 0 // Max value which can be interted into a set
     
-    var data: UnsafeMutablePointer<UInt64> // we are going to manage our own memory
+    public var data: UnsafeMutablePointer<UInt64> // we are going to manage our own memory
     
     public static var allocations = 0
     public static var deallocations = 0
@@ -182,7 +182,7 @@ Hashable, ExpressibleByArrayLiteral {
             return contains(value)
         }
         set(newValue) {
-            if newValue { insert(value)} else {remove(value)}
+            if newValue { insert(value)} else { remove(value) }
         }
     }
     

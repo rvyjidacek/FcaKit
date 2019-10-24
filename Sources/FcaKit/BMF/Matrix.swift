@@ -25,4 +25,5 @@ extension Matrix {
         return tuples
     }
     
+    var size: (rows: Int, columns: Int) { (self.count, self.first?.count ?? 0) }
 }
