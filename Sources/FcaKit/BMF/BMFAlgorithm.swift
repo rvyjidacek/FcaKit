@@ -104,13 +104,9 @@ public class CartesianProduct: Sequence, IteratorProtocol, CustomStringConvertib
     
     fileprivate func tupleToIndex(tuple: Tuple) -> Int {
         return (tuple.row * colsCount) + tuple.col
-        //X + Y * Width
-        //return tuple.row + tuple.col * colsCount
     }
     
     fileprivate func indexToTuple(index: Int) -> Tuple {
-        //let row = index / colsCount
-        //return (row, index - (rowsCount * row))
         let row = index / colsCount
         let col = index - (row * colsCount)
         return (row, col)
