@@ -9,10 +9,8 @@ import Foundation
 
 public class GreCon2: BMFAlgorithm {
     
-    private typealias
-    
-    public override func countFactors(in matrix: Matrix) -> Set<FormalConcept> {
-        let concepts = PFCbO().count(in: FormalContext(values: matrix))
+    public override func countFactors(in matrix: Matrix) -> [FormalConcept] {
+        let concepts = [FormalConcept](PFCbO().count(in: FormalContext(values: matrix)))
         var coverage: [(conceptIndex: Int, coverage: Int)] = concepts.enumerated().map { ($0, $1.attributes.count * $1.objects.count) }
         coverage.sort(by: { $0.coverage > $1.coverage })
         
