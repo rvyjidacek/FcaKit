@@ -49,19 +49,21 @@ public class CartesianProduct: Sequence, IteratorProtocol, CustomStringConvertib
     
     public var rowsCount: Int
     public var colsCount: Int
+
     
     public init(a: BitSet, b: BitSet) {
         values = BitSet(size: a.count * b.count)
         rowsCount = a.size
         colsCount = b.size
         
-        for aValue in a {
-            for bValue in b {
-                let index = tupleToIndex(tuple: (aValue, bValue))
-                values.insert(index)
-            }
-        }
+        fillValues(a, b)
         
+    }
+    
+    public init(cartesianProduct: CartesianProduct) {
+        values = BitSet(bitset: cartesianProduct.values)
+        rowsCount = cartesianProduct.rowsCount
+        colsCount = cartesianProduct.colsCount
     }
     
     public init(rows: Int, cols: Int) {
@@ -92,6 +94,12 @@ public class CartesianProduct: Sequence, IteratorProtocol, CustomStringConvertib
         values.intersection(with: other.values)
     }
     
+    public func intersected(_ other: CartesianProduct) -> CartesianProduct {
+        let result = CartesianProduct(cartesianProduct: other)
+        result.intersection(self)
+        return result
+    }
+    
     public func remove(_ value: Tuple) {
         values.remove(tupleToIndex(tuple: value))
     }
@@ -100,6 +108,18 @@ public class CartesianProduct: Sequence, IteratorProtocol, CustomStringConvertib
         rowsCount = other.rowsCount
         colsCount = other.colsCount
         values.setValues(to: other.values)
+    }
+    
+    public func insert(a: BitSet, b: BitSet) {
+        rowsCount = a.size
+        colsCount = b.size
+        fillValues(a, b)
+    }
+    
+    public func next() -> (row: Int, col: Int)? {
+        if let value = bitsetIterator.next() { return indexToTuple(index: value) }
+        bitsetIterator = values.makeIterator()
+        return nil
     }
     
     fileprivate func tupleToIndex(tuple: Tuple) -> Int {
@@ -113,11 +133,12 @@ public class CartesianProduct: Sequence, IteratorProtocol, CustomStringConvertib
         
     }
     
-    public func next() -> (row: Int, col: Int)? {
-        if let value = bitsetIterator.next() { return indexToTuple(index: value) }
-        bitsetIterator = values.makeIterator()
-        return nil
+    fileprivate func fillValues(_ a: BitSet, _ b: BitSet) {
+        for aValue in a {
+            for bValue in b {
+                let index = tupleToIndex(tuple: (aValue, bValue))
+                values.insert(index)
+            }
+        }
     }
-    
-    
 }
