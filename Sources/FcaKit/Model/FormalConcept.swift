@@ -13,8 +13,8 @@ public func == (lhs: FormalConcept, rhs: FormalConcept) -> Bool {
 }
 
 public class FormalConcept: CustomStringConvertible, Hashable, Codable {
-    public var objects: BitSet
-    public var attributes: BitSet
+    public let objects: BitSet
+    public let attributes: BitSet
     
     public init(objects: BitSet, attributes: BitSet) {
         self.objects = objects
