@@ -43,11 +43,11 @@ public final class GreCon2: BMFAlgorithm {
         return cells
     }
     
-    fileprivate func index(of tuple: MyCartesianProduct.Tuple) -> Int {
+    fileprivate func index(of tuple: CartesianProduct.Tuple) -> Int {
         return (tuple.row * context.attributeCount) + tuple.col
     }
     
-    fileprivate func tuple(for index: Int) -> MyCartesianProduct.Tuple {
+    fileprivate func tuple(for index: Int) -> CartesianProduct.Tuple {
         let row = index / context.attributeCount
         let col = index - (row * context.attributeCount)
         return (row, col)

@@ -55,14 +55,14 @@ public class GreCon: BMFAlgorithm {
     }
     
     
-    var covered: MyCartesianProduct!
+    var covered: CartesianProduct!
     
     public override func countFactors(in context: FormalContext) -> Set<FormalConcept> {
         self.context = context
         var S = FCbO().count(in: context)
-        let U = MyCartesianProduct(context: context)
+        let U = CartesianProduct(context: context)
         
-        self.tuplesIntersection = MyCartesianProduct(context: context)
+        self.tuplesIntersection = CartesianProduct(context: context)
         var F = [FormalConcept]()
         let attributeConcepts = self.attributeConcepts(in: context)
         let objectConcepts = self.objectConcepts(in: context)
@@ -79,7 +79,7 @@ public class GreCon: BMFAlgorithm {
             }
         }
         
-        self.covered = MyCartesianProduct(rows: context.objectCount, cols: context.attributeCount)
+        self.covered = CartesianProduct(rows: context.objectCount, cols: context.attributeCount)
         
         while !(U.isEmpty) {
             covered.values.erase()
@@ -109,9 +109,9 @@ public class GreCon: BMFAlgorithm {
         return []
     }
     
-    fileprivate var tuplesIntersection: MyCartesianProduct!
+    fileprivate var tuplesIntersection: CartesianProduct!
     
-    private func selectMaxCover(of tuples: MyCartesianProduct, from concepts: Set<FormalConcept>) -> (concept: FormalConcept, cover: Int) {
+    private func selectMaxCover(of tuples: CartesianProduct, from concepts: Set<FormalConcept>) -> (concept: FormalConcept, cover: Int) {
         var maxCoverSize = 0
         var maxCoverConcept: FormalConcept?
         

@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class MyCartesianProduct: Sequence, IteratorProtocol, CustomStringConvertible {
+public class CartesianProduct: Sequence, IteratorProtocol, CustomStringConvertible {
     
     public typealias Tuple = (row: Int, col: Int)
     
@@ -34,7 +34,7 @@ public class MyCartesianProduct: Sequence, IteratorProtocol, CustomStringConvert
         
     }
     
-    public init(cartesianProduct: MyCartesianProduct) {
+    public init(cartesianProduct: CartesianProduct) {
         values = BitSet(bitset: cartesianProduct.values)
         colsCount = cartesianProduct.colsCount
     }
@@ -61,12 +61,12 @@ public class MyCartesianProduct: Sequence, IteratorProtocol, CustomStringConvert
         values.insert(index(of: value))
     }
     
-    public func intersection(_ other: MyCartesianProduct) {
+    public func intersection(_ other: CartesianProduct) {
         values.intersection(with: other.values)
     }
     
-    public func intersected(_ other: MyCartesianProduct) -> MyCartesianProduct {
-        let result = MyCartesianProduct(cartesianProduct: other)
+    public func intersected(_ other: CartesianProduct) -> CartesianProduct {
+        let result = CartesianProduct(cartesianProduct: other)
         result.intersection(self)
         return result
     }
@@ -75,7 +75,7 @@ public class MyCartesianProduct: Sequence, IteratorProtocol, CustomStringConvert
         values.remove(index(of: value))
     }
     
-    public func copyValues(_ other: MyCartesianProduct) {
+    public func copyValues(_ other: CartesianProduct) {
         colsCount = other.colsCount
         values.setValues(to: other.values)
     }
