@@ -37,6 +37,6 @@ public class FormalConcept: CustomStringConvertible, Hashable, Codable {
         return objects.cartesianProduct(with: attributes)
     }()
     
-    public lazy var cartesianProduct: CartesianProduct = { CartesianProduct(a: objects, b: attributes) }()
+    public lazy var cartesianProduct: MyCartesianProduct = { MyCartesianProduct(a: objects, b: attributes) }()
 }
 

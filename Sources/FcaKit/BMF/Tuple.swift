@@ -20,3 +20,4 @@ public struct Tuple: Hashable {
 public func ==(lhs: Tuple, rhs: Tuple) -> Bool {
     return lhs.a == rhs.a && lhs.b == rhs.b
 }
+

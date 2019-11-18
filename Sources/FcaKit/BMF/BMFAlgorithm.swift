@@ -9,13 +9,15 @@ import Foundation
 
 public class BMFAlgorithm {
     
+    var context: FormalContext!
+    
     public init() { }
     
-    func tuples(in matrix: Matrix) -> Set<Tuple> {
+    func tuples(in context: FormalContext) -> Set<Tuple> {
         var tuples: Set<Tuple> = []
-        for row in 0..<matrix.count {
-            for col in 0..<matrix[row].count {
-                if matrix[row][col] == 1 {
+        for row in 0..<context.values.count {
+            for col in 0..<context.values[row].count {
+                if context.values[row][col] == 1 {
                     tuples.insert(Tuple(a: row, b: col))
                 }
             }
@@ -23,7 +25,8 @@ public class BMFAlgorithm {
         return tuples
     }
     
-    public func countFactors(in matrix: Matrix) -> Set<FormalConcept> {
+    public func countFactors(in context: FormalContext) -> Set<FormalConcept> {
+        self.context = context
         return []
     }
 }

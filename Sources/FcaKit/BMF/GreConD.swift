@@ -10,10 +10,8 @@ import Foundation
 
 public class GreConD: BMFAlgorithm {
     
-    var context: FormalContext!
-    
     public func countFactorsOld(in matrix: Matrix) -> Set<FormalConcept> {
-        context = FormalContext(values: matrix)
+        /*context = FormalContext(values: matrix)
         var U = tuples(in: matrix)
         var F = Set<FormalConcept>()
     
@@ -42,19 +40,20 @@ public class GreConD: BMFAlgorithm {
                 }
             }
         }
-        return F
+        return F*/
+        return []
     }
     
-    public override func countFactors(in matrix: Matrix) -> Set<FormalConcept> {
-        context = FormalContext(values: matrix)
-        let U = CartesianProduct(matrix: matrix)
+    public override func countFactors(in context: FormalContext) -> Set<FormalConcept> {
+        self.context = context
+        let U = MyCartesianProduct(context: context)
         var F = Set<FormalConcept>()
         
         while !(U.isEmpty) {
             var D = context.attributeSet()
             var V = 0
             
-            let tuples = (0..<context.attributeCount).compactMap { (attribute) -> (attribute: Int, tuples: CartesianProduct)? in
+            let tuples = (0..<context.attributeCount).compactMap { (attribute) -> (attribute: Int, tuples: MyCartesianProduct)? in
                 if D.contains(attribute) { return nil }
                 return (attribute, setPlus2(of: D, with: attribute, tuples: U))
             }
@@ -66,7 +65,7 @@ public class GreConD: BMFAlgorithm {
                 D = context.downAndUp(attributes: D)
                 let downD = context.down(attributes: D)
                 
-                let tuples = CartesianProduct(a: D, b: downD)
+                let tuples = MyCartesianProduct(a: D, b: downD)
                 tuples.intersection(U)
                 
                 
@@ -82,27 +81,27 @@ public class GreConD: BMFAlgorithm {
         return F
     }
     
-    private func setPlus(of attributeSet: BitSet, with attribute: Attribute, tuples: CartesianProduct) -> CartesianProduct {
+    private func setPlus(of attributeSet: BitSet, with attribute: Attribute, tuples: MyCartesianProduct) -> MyCartesianProduct {
         var a = BitSet(bitset: attributeSet)
         a.insert(attribute)
         a = context.down(attributes: a)
             
         let b = context.up(objects: a)
-        return tuples.intersected(CartesianProduct(a: a, b: b))
+        return tuples.intersected(MyCartesianProduct(a: a, b: b))
     }
     
     
     private lazy var atributes: BitSet = { BitSet(size: self.context.attributeCount) }()
     private lazy var objects: BitSet = { BitSet(size: self.context.objectCount) }()
     
-    private func setPlus2(of attributeSet: BitSet, with attribute: Attribute, tuples: CartesianProduct) -> CartesianProduct {
+    private func setPlus2(of attributeSet: BitSet, with attribute: Attribute, tuples: MyCartesianProduct) -> MyCartesianProduct {
         atributes.setValues(to: attributeSet)
         atributes.insert(attribute)
     
         context.down(attributes: atributes, into: objects)
         context.up(objects: objects, into: atributes)
         
-        let cartesianProduct = CartesianProduct(a: objects, b: atributes)
+        let cartesianProduct = MyCartesianProduct(a: objects, b: atributes)
         cartesianProduct.intersection(tuples)
         return cartesianProduct
     }
