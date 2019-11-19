@@ -11,6 +11,8 @@ import Foundation
 
 public class FcaAlgorithm {
     
+    public static var saveConcepts: Bool = true
+    
     public enum OutputFormat {
         case Json
         case Object
@@ -36,7 +38,9 @@ public class FcaAlgorithm {
     }
     
     func store(concept: FormalConcept) {
-        concepts.insert(concept)
+        if FcaAlgorithm.saveConcepts {
+            concepts.insert(concept)
+        }
         conceptsCount += 1
     }
     
