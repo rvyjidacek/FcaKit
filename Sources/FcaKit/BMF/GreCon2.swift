@@ -11,23 +11,38 @@ public final class GreCon2: BMFAlgorithm {
     
     fileprivate typealias CoverageTuple = (conceptIndex: Int, concept: FormalConcept, coverage: Int)
     
-    public override func countFactors(in context: FormalContext) -> Set<FormalConcept> {
+    public func countFactors(in context: FormalContext) -> [FormalConcept] {
         _ = super.countFactors(in: context)
-        let concepts = FCbO().count(in: context)
-        let conceptsArray = [FormalConcept](concepts)
+        var concepts: [FormalConcept] = []
+        let conceptsArray = [FormalConcept](FCbO().count(in: context))
         var coverage: [CoverageTuple] = conceptsArray.enumerated().map { ($0, $1, $1.attributes.count * $1.objects.count) }
-        coverage.sort(by: { $0.coverage > $1.coverage })
-        
         var cells = createCells(from: coverage)
-    
-        let maxValue = coverage[0]
         
-        for tuple in maxValue.concept.cartesianProduct {
-            let index = self.index(of: tuple)
-            cells[index]?.removeAll(where: { $0 == maxValue.conceptIndex })
+        while !(coverage.filter({ $0.coverage > 0 }).isEmpty) {
+            let permutation = coverage.sorted(by: { $0.coverage > $1.coverage })
+                                      .map { $0.conceptIndex }
+            
+            let maxValue = coverage[permutation[0]]
+            
+            concepts.append(maxValue.concept)
+            
+            for tuple in maxValue.concept.cartesianProduct {
+                let index = self.index(of: tuple)
+                
+                cells[index]?.removeAll(where: { $0 == maxValue.conceptIndex })
+                cells[index]?.forEach {
+                    coverage[$0] = (coverage[$0].conceptIndex, coverage[$0].concept, coverage[$0].coverage - 1)
+                }
+            }
+            
+            coverage[permutation[0]] = (coverage[permutation[0]].conceptIndex,
+                                        coverage[permutation[0]].concept,
+                                        0)
+            
         }
-        
+         
         return concepts
+        
     }
     
     fileprivate func createCells(from tuples: [CoverageTuple]) -> [[Int]?] {
