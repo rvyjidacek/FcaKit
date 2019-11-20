@@ -9,6 +9,12 @@ import Foundation
 
 public class BMFAlgorithm {
     
+    
+    public var name: String {
+        let thisType = type(of: self)
+        return String(describing: thisType)
+    }
+    
     var context: FormalContext!
     
     public init() { }

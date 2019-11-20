@@ -10,7 +10,6 @@ import Foundation
 
 public class GreCon: BMFAlgorithm {
     
-    
     public func countFactorsOld(in context: FormalContext) -> Set<FormalConcept> {
         /*self.context = context
         var S = FCbO().count(in: context)
