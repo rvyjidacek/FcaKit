@@ -11,7 +11,7 @@ public final class GreCon2: BMFAlgorithm {
     
     fileprivate typealias CoverageTuple = (conceptIndex: Int, concept: FormalConcept, coverage: Int)
     
-    public func countFactors(in context: FormalContext) -> [FormalConcept] {
+    public override func countFactors(in context: FormalContext) -> [FormalConcept] {
         _ = super.countFactors(in: context)
         var concepts: [FormalConcept] = []
         let conceptsArray = [FormalConcept](FCbO().count(in: context))

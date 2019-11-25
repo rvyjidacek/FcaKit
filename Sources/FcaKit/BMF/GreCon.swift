@@ -9,54 +9,10 @@
 import Foundation
 
 public class GreCon: BMFAlgorithm {
-    
-    public func countFactorsOld(in context: FormalContext) -> Set<FormalConcept> {
-        /*self.context = context
-        var S = FCbO().count(in: context)
-        var U = tuples(in: context)
-        
-        var F = [FormalConcept]()
-        let attributeConcepts = self.attributeConcepts(in: context)
-        let objectConcepts = self.objectConcepts(in: context)
-        let conceptsIntersection = attributeConcepts.intersection(objectConcepts)
-        
-        for concept in S {
-            if conceptsIntersection.contains(concept) {
-                F.append(concept)
-                S.remove(concept)
-                
-                for tuple in concept.tuples {
-                    U.remove(tuple)
-                }
-            }
-        }
-        while !(U.isEmpty) {
-            var covered = Set<Tuple>()
-            
-            let result = selectMaxCover(of: U, from: S)
-            //print("Concept \(result.concept) cover \(result.cover)")
-            F.append(result.concept)
-            S.remove(result.concept)
-            
-            for tuple in result.concept.tuples {
-                covered.insert(tuple)
-            }
-            
-            for tuple in result.concept.tuples {
-                U.remove(tuple)
-            }
-            
-            //print("size of U = \(U.count)")
-        }
-        return F
- */
-        return []
-    }
-    
-    
+
     var covered: CartesianProduct!
     
-    public override func countFactors(in context: FormalContext) -> Set<FormalConcept> {
+    public override func countFactors(in context: FormalContext) -> [FormalConcept] {
         self.context = context
         var S = FCbO().count(in: context)
         let U = CartesianProduct(context: context)
@@ -84,29 +40,22 @@ public class GreCon: BMFAlgorithm {
             covered.values.erase()
             
             let result = selectMaxCover(of: U, from: S)
-            //print("Concept \(result.concept) cover \(result.cover)")
             F.append(result.concept)
             S.remove(result.concept)
             
             for tuple in result.concept.cartesianProduct {
-                //print("Insert \(tuple) to covered")
                 covered.insert(tuple)
             }
             
-            //print("size of covered = \(covered.count)")
             
             for tuple in result.concept.cartesianProduct {
                 U.remove(tuple)
             }
-            //print("size of U = \(U.count)")
+
         }
-        return Set<FormalConcept>(F)
+        return F
     }
     
-    
-    public func countBMF2(of matrix: Matrix, using fcaAlgorithm: FcaAlgorithm = PFCbO()) -> [FormalConcept] {
-        return []
-    }
     
     fileprivate var tuplesIntersection: CartesianProduct!
     
@@ -165,18 +114,14 @@ public class GreCon: BMFAlgorithm {
     }
 }
 
-class GreConV2: BMFAlgorithm {
+public class GreConV2: BMFAlgorithm {
     
-    override func countFactors(in context: FormalContext) -> Set<FormalConcept> {
-        return []
-    }
     
-    public func countBMF(of matrix: Matrix, using fcaAlgorithm: FcaAlgorithm = PFCbO()) -> [FormalConcept] {//Set<FormalConcept> {
-        let context = FormalContext(values: matrix)
-        var S = fcaAlgorithm.count(in: context)
+    public override func countFactors(in context: FormalContext) -> [FormalConcept] {
+        var S = PFCbO().count(in: context)
         
         var U = tuples(in: context)
-        var F = [FormalConcept]()//Set<FormalConcept>()
+        var F = [FormalConcept]()
         let attributeConcepts = self.attributeConcepts(in: context)
         let objectConcepts = self.objectConcepts(in: context)
         let conceptsIntersection = attributeConcepts.intersection(objectConcepts)
@@ -259,24 +204,3 @@ class GreConV2: BMFAlgorithm {
     }
 }
 
-func printLatexMatrix(tuples: Set<Tuple>, covered: Set<Tuple> = []) {
-    //    var matrix = Matrix(repeating: [Int](repeating: 0, count: 8), count: 12)
-    //
-    //    for tuple in tuples {
-    //        matrix[tuple.a][tuple.b] = 1
-    //    }
-    //
-    //    print("$$\\begin{pmatrix}")
-    //    for row in 0..<matrix.count {
-    //        print("  ", separator: "", terminator: "")
-    //        for col in 0..<matrix[row].count {
-    //            if col == matrix[row].count - 1 {
-    //                print(!covered.contains(Tuple(a: row, b: col)) ? "\(matrix[row][col]) \\\\" : "\\textbf{\(matrix[row][col])} \\\\", separator: "", terminator: "\n")
-    //            } else {
-    //                print(!covered.contains(Tuple(a: row, b: col)) ? "\(matrix[row][col]) & " : "\\textbf{\(matrix[row][col])} & ", separator: "", terminator: "")
-    //            }
-    //        }
-    //    }
-    //
-    //    print("\\end{pmatrix}$$")
-}

@@ -31,7 +31,7 @@ public class BMFAlgorithm {
         return tuples
     }
     
-    public func countFactors(in context: FormalContext) -> Set<FormalConcept> {
+    public func countFactors(in context: FormalContext) -> [FormalConcept] {
         self.context = context
         return []
     }
