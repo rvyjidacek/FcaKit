@@ -12,6 +12,13 @@ public class NextClosure: FcaAlgorithm {
     
     var closureCount: Int = 0
     
+    private var diff: BitSet!
+    private var zeroToI: BitSet!
+    private var x: BitSet!
+    private var y: BitSet!
+    private var a: BitSet!
+    private var aDown: BitSet!
+    
     public override var name: String {
         return "Next Closure"
     }
@@ -26,15 +33,15 @@ public class NextClosure: FcaAlgorithm {
         self.y = context.attributeSet()
         
         var a = context.up(objects: 0..<context.objectCount)
-        //concepts.insert(FormalConcept(objects: context.down(attributes: a), attributes: a))
+        
+        store(concept: FormalConcept(objects: context.down(attributes: a), attributes: a))
+        
         let allAttributes = context.allAttributes
         
         while !(a == allAttributes) {
             a = leastGraterIntent(intent: a)
             store(concept: FormalConcept(objects: context.down(attributes: a),
                                          attributes: a))
-            //concepts.insert(FormalConcept(objects: context.down(attributes: a),
-             //                             attributes: a))
         }
         return concepts
     }
@@ -46,19 +53,16 @@ public class NextClosure: FcaAlgorithm {
                 return intentPlusI
             }
         }
-        return intent //BitSet(bitset: intent)
+        return intent
     }
     
-    private var diff: BitSet!
-    private var zeroToI: BitSet!
-    private var x: BitSet!
-    private var y: BitSet!
+    
     
     public func lessThan(left: BitSet, right: BitSet, i: Attribute) -> Bool {
         diff.setValues(to: right)
         diff.difference(left)
 
-        zeroToI.erase()
+        //zeroToI.erase()
         zeroToI.addMany(0..<i)
         
         x.setValues(to: left)
@@ -70,11 +74,9 @@ public class NextClosure: FcaAlgorithm {
         return diff.contains(i) && x == y
     }
     
-    private var a: BitSet!
-    private var aDown: BitSet!
     
     public func setPlus(set: BitSet, i: Attribute) -> BitSet {
-        a.erase()
+        //a.erase()
         a.addMany(0..<i)
         a.intersection(with: set)
         a.insert(i)
