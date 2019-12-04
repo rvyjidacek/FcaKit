@@ -12,6 +12,9 @@ public class GreConD: BMFAlgorithm {
     
     public override func countFactors(in context: FormalContext) -> [FormalConcept] {
         self.context = context
+        self.atributes = BitSet(size: self.context.attributeCount)
+        self.objects = BitSet(size: self.context.objectCount)
+        
         let U = CartesianProduct(context: context)
         var F: Set<FormalConcept> = []
         let D = context.attributeSet()
@@ -65,9 +68,8 @@ public class GreConD: BMFAlgorithm {
         return tuples.intersected(CartesianProduct(a: a, b: b))
     }
     
-    
-    private lazy var atributes: BitSet = { BitSet(size: self.context.attributeCount) }()
-    private lazy var objects: BitSet = { BitSet(size: self.context.objectCount) }()
+    private var atributes: BitSet!
+    private var objects: BitSet!
     
     private func setPlus2(of attributeSet: BitSet, with attribute: Attribute, tuples: CartesianProduct) -> CartesianProduct {
         atributes.setValues(to: attributeSet)

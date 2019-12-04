@@ -114,24 +114,26 @@ public class GreCon: BMFAlgorithm {
     }
 }
 
-public class GreConV2: BMFAlgorithm {
+public class SortGreCon: BMFAlgorithm {
     
     
     public override func countFactors(in context: FormalContext) -> [FormalConcept] {
         var S = PFCbO().count(in: context)
         
-        var U = tuples(in: context)
+        let U = CartesianProduct(context: context)//tuples(in: context)
         var F = [FormalConcept]()
         let attributeConcepts = self.attributeConcepts(in: context)
         let objectConcepts = self.objectConcepts(in: context)
         let conceptsIntersection = attributeConcepts.intersection(objectConcepts)
+        
+        self.maxCoverTuplesIntersection = CartesianProduct(rows: context.objectCount, cols: context.attributeCount)
         
         for concept in S {
             if conceptsIntersection.contains(concept) {
                 F.append(concept)
                 S.remove(concept)
                 
-                for tuple in concept.tuples {
+                for tuple in concept.cartesianProduct {
                     U.remove(tuple)
                 }
             }
@@ -148,7 +150,7 @@ public class GreConV2: BMFAlgorithm {
             
             F.append(sortedS[result.index])
             
-            for tuple in sortedS[result.index].tuples {
+            for tuple in sortedS[result.index].cartesianProduct {
                 U.remove(tuple)
             }
             
@@ -159,8 +161,13 @@ public class GreConV2: BMFAlgorithm {
         return F
     }
     
-    private func selectMaxCover(of tuples: Set<Tuple>, from concepts: [FormalConcept]) -> (index: Int, cover: Int) {
-        var maxCoverSize = tuples.intersection(concepts[0].tuples).count
+    fileprivate var maxCoverTuplesIntersection: CartesianProduct!
+    
+    private func selectMaxCover(of tuples: CartesianProduct, from concepts: [FormalConcept]) -> (index: Int, cover: Int) {
+        maxCoverTuplesIntersection.copyValues(tuples)
+        maxCoverTuplesIntersection.intersection(concepts[0].cartesianProduct)
+        
+        var maxCoverSize = maxCoverTuplesIntersection.count //tuples.intersection(concepts[0].tuples).count
         var maxCoverConceptIndex: Int = 0
         
         
@@ -168,9 +175,12 @@ public class GreConV2: BMFAlgorithm {
             if concepts[i].tuples.count < maxCoverSize {
                 break
             } else {
-                let coverSize = tuples.intersection(concepts[i].tuples).count
+                maxCoverTuplesIntersection.copyValues(tuples)
+                maxCoverTuplesIntersection.intersection(concepts[i].cartesianProduct)
+                
+                let coverSize = maxCoverTuplesIntersection.count
                 if coverSize > maxCoverSize {
-                    maxCoverSize = tuples.intersection(concepts[i].tuples).count
+                    maxCoverSize = coverSize //tuples.intersection(concepts[i].tuples).count
                     maxCoverConceptIndex = i
                 }
             }
