@@ -36,6 +36,21 @@ public class FormalContext {
         return BitSet(size: objectCount, values: 0..<objectCount)
     }
     
+    public var htmlDescription: String {
+        var htmlString = "<table>"
+        
+        for row in 0..<values.count {
+            htmlString.append("<tr>")
+            for col in 0..<values[row].count {
+                htmlString.append("<td>\(values[row][col])</td>")
+            }
+            htmlString.append("</tr>")
+        }
+        
+        htmlString.append("</table>")
+        return htmlString
+    }
+    
     /// 2D array with binary data. This value is useful for ELL algorithm of BMF
     public var values: Matrix = []
     

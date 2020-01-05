@@ -38,5 +38,7 @@ public class FormalConcept: CustomStringConvertible, Hashable, Codable {
     }()
     
     public lazy var cartesianProduct: CartesianProduct = { CartesianProduct(a: objects, b: attributes) }()
+    
+    
 }
 
