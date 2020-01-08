@@ -13,6 +13,21 @@ public typealias Matrix = [[Int]]
 
 extension Matrix {
     
+    public var htmlDescription: String {
+        var htmlString = "<table>"
+        
+        for row in 0..<count {
+            htmlString.append("<tr>")
+            for col in 0..<self[row].count {
+                htmlString.append("<td>\(self[row][col])</td>")
+            }
+            htmlString.append("</tr>")
+        }
+        
+        htmlString.append("</table>")
+        return htmlString
+    }
+    
     var tuples: Set<Tuple> {
         var tuples: Set<Tuple> = []
         for row in 0..<count {
@@ -26,4 +41,24 @@ extension Matrix {
     }
     
     var size: (rows: Int, columns: Int) { (self.count, self.first?.count ?? 0) }
+    
+    public func printCoverage(cover: [CartesianProduct.Tuple]) -> String {
+        var htmlString = "<table>"
+        
+        for row in 0..<count {
+            htmlString.append("<tr>")
+            for col in 0..<self[row].count {
+                if self[row][col] == 1 && cover.first(where: { $0.row == row && $0.col == col }) != nil {
+                    htmlString.append("<td bgcolor=\"#ffce0f\"><b>\(self[row][col])</b></td>")
+                } else {
+                    htmlString.append("<td>\(self[row][col])</td>")
+                }
+                
+            }
+            htmlString.append("</tr>")
+        }
+        
+        htmlString.append("</table>")
+        return htmlString
+    }
 }
