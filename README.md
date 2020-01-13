@@ -25,6 +25,8 @@ Formal concept analysis (FCA) is a principled way of deriving a concept hierarch
 8. In-Close2
 9. In-Close4
 
+Benchamrks can be found [here](Benchmarks.md).
+
 ## Implemented BMF Algorithms
 1. GreCon
 2. SortGreCon
