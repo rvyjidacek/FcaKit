@@ -51,7 +51,11 @@ extension Matrix {
                 if self[row][col] == 1 && cover.first(where: { $0.row == row && $0.col == col }) != nil {
                     htmlString.append("<td bgcolor=\"#ffce0f\"><b>\(self[row][col])</b></td>")
                 } else {
-                    htmlString.append("<td>\(self[row][col])</td>")
+                    if self[row][col] == 1 {
+                        htmlString.append("<td bgcolor=\"#D3212D\">\(self[row][col])</td>")
+                    } else {
+                        htmlString.append("<td>\(self[row][col])</td>")
+                    }
                 }
                 
             }

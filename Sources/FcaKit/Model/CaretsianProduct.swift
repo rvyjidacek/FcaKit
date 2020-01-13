@@ -15,9 +15,9 @@ public class CartesianProduct: Sequence, IteratorProtocol, CustomStringConvertib
     
     public var description: String { values.map { "\(tuple(for: $0))" }.description }
     
-    var count: Int { values.count }
+    public var count: Int { values.count }
     
-    var isEmpty: Bool { values.isEmpty }
+    public var isEmpty: Bool { values.isEmpty }
     
     public var values: BitSet
     
@@ -68,6 +68,16 @@ public class CartesianProduct: Sequence, IteratorProtocol, CustomStringConvertib
     public func intersected(_ other: CartesianProduct) -> CartesianProduct {
         let result = CartesianProduct(cartesianProduct: other)
         result.intersection(self)
+        return result
+    }
+    
+    public func union(_ other: CartesianProduct) {
+        values.union(with: other.values)
+    }
+    
+    public func unioned(_ other: CartesianProduct) -> CartesianProduct {
+        let result = CartesianProduct(cartesianProduct: other)
+        result.union(self)
         return result
     }
     
