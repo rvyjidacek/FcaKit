@@ -76,6 +76,7 @@ public class GreCon: BMFAlgorithm {
         return (maxCoverConcept!, maxCoverSize)
     }
     
+    /*
     private func selectMaxCover(of tuples: Set<Tuple>, from concepts: Set<FormalConcept>) -> (concept: FormalConcept, cover: Int) {
         var maxCoverSize = 0
         var maxCoverConcept: FormalConcept?
@@ -90,6 +91,7 @@ public class GreCon: BMFAlgorithm {
         return (maxCoverConcept!, maxCoverSize)
     }
     
+     */
     
     
     private func attributeConcepts(in context: FormalContext) -> Set<FormalConcept> {

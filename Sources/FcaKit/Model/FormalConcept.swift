@@ -33,7 +33,7 @@ public class FormalConcept: CustomStringConvertible, Hashable, Codable {
         return "$\\langle\(objects),\(attributes)\\rangle$".replacingOccurrences(of: "{", with: "\\{").replacingOccurrences(of: "}", with: "\\}")
     }
     
-    public lazy var tuples: Set<Tuple> = {
+    public lazy var tuples: CartesianProduct = {
         return objects.cartesianProduct(with: attributes)
     }()
     

@@ -107,15 +107,8 @@ Hashable, ExpressibleByArrayLiteral {
     // return an empty bitset
     public static var allZeros: BitSet { return BitSet() }
     
-    public func cartesianProduct(with bitset: BitSet) -> Set<Tuple> {
-        var result: Set<Tuple> = []
-        
-        for a in self {
-            for b in bitset {
-                result.insert(Tuple(a: a, b: b))
-            }
-        }
-        return result
+    public func cartesianProduct(with bitset: BitSet) -> CartesianProduct {
+        return CartesianProduct(a: self, b: bitset)
     }
     
     

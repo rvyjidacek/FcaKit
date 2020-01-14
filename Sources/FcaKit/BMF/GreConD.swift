@@ -16,8 +16,10 @@ public class GreConD: BMFAlgorithm {
         self.objects = BitSet(size: self.context.objectCount)
         
         let U = CartesianProduct(context: context)
-        var F: Set<FormalConcept> = []
-        let D = context.attributeSet()
+        var F: [FormalConcept] = []
+        var D = context.attributeSet()
+        
+        //var coverage: [CartesianProduct.Tuple] = []
         
         while !(U.isEmpty) {
             D.erase()
@@ -25,38 +27,39 @@ public class GreConD: BMFAlgorithm {
             
             let tuples = (0..<context.attributeCount).compactMap { (attribute) -> (attribute: Int, tuples: CartesianProduct)? in
                 if D.contains(attribute) { return nil }
-                return (attribute, setPlus2(of: D, with: attribute, tuples: U))
+                let setPlus = setPlus2(of: D, with: attribute, tuples: U)
+                
+                return setPlus.count <= V ? nil : (attribute, setPlus)
             }
             
-            
-            if tuples.first(where: { $0.tuples.count > V }) != nil {
-                let max = tuples.last(where: { $0.tuples.count > V })!.attribute
-                D.insert(max)
+            if let max = tuples.max(by: { a, b in a.tuples.count < b.tuples.count }) {
+                D.insert(max.attribute)
                 
-                //D = context.downAndUp(attributes: D)
-                let downD = context.down(attributes: D)
-                context.up(objects: downD, into: D)
+                D = context.downAndUp(attributes: D)
+                //let downD = context.down(attributes: D)
+                //context.up(objects: downD, into: D)
                 
         
-                //let downD = context.down(attributes: D)
-                context.down(attributes: D, into: downD)
+                let downD = context.down(attributes: D)
+                //context.down(attributes: D, into: downD)
                 
                 let tuples = CartesianProduct(a: D, b: downD)
                 tuples.intersection(U)
                 
                 
-                V = tuples.count
-                //V = downD.cartesianProduct(with: D).intersection(U).count
+                //V = tuples.count
+                V = downD.cartesianProduct(with: D).intersected(U).count//intersectioned(U).count
                 let concept = FormalConcept(objects: downD, attributes: D)
-                //F.append(concept)
-                F.insert(concept)
+                F.append(concept)
+                //F.insert(concept)
                 
                 for tuple in concept.cartesianProduct {
                     U.remove(tuple)
+                    //coverage.append(tuple)
                 }
             }
         }
-        return [FormalConcept](F)
+        return F
     }
     
     private func setPlus(of attributeSet: BitSet, with attribute: Attribute, tuples: CartesianProduct) -> CartesianProduct {
@@ -83,6 +86,7 @@ public class GreConD: BMFAlgorithm {
         return cartesianProduct
     }
     
+    /*
     private func setPlus(of attributeSet: BitSet, with attribute: Attribute, tuples: Set<Tuple>, context: FormalContext) -> Set<Tuple> {
         var a = BitSet(bitset: attributeSet)
         a.insert(attribute)
@@ -93,4 +97,5 @@ public class GreConD: BMFAlgorithm {
         let concept = FormalConcept(objects: a, attributes: b)
         return tuples.intersection(concept.tuples)
     }
+     */
 }
