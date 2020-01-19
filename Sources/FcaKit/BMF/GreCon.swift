@@ -16,39 +16,32 @@ public class GreCon: BMFAlgorithm {
         self.context = context
         var S = FCbO().count(in: context)
         let U = CartesianProduct(context: context)
-        
         self.tuplesIntersection = CartesianProduct(context: context)
         var F = [FormalConcept]()
-        let attributeConcepts = self.attributeConcepts(in: context)
-        let objectConcepts = self.objectConcepts(in: context)
-        let conceptsIntersection = attributeConcepts.intersection(objectConcepts)
+        let tmpCartesianProduct = CartesianProduct(rows: context.objectCount,
+                                                   cols: context.attributeCount)
         
-        for concept in S {
-            if conceptsIntersection.contains(concept) {
-                F.append(concept)
-                S.remove(concept)
-                
-                for tuple in concept.cartesianProduct {
-                    U.remove(tuple)
-                }
-            }
-        }
-        
-        self.covered = CartesianProduct(rows: context.objectCount, cols: context.attributeCount)
+        //self.covered = CartesianProduct(rows: context.objectCount, cols: context.attributeCount)
         
         while !(U.isEmpty) {
-            covered.values.erase()
+            //covered.values.erase()
             
             let result = selectMaxCover(of: U, from: S)
             F.append(result.concept)
             S.remove(result.concept)
             
+            
+            /*
             for tuple in result.concept.cartesianProduct {
                 covered.insert(tuple)
             }
+             */
             
+            tmpCartesianProduct.values.erase()
+            tmpCartesianProduct.insert(a: result.concept.objects,
+                                       b: result.concept.attributes)
             
-            for tuple in result.concept.cartesianProduct {
+            for tuple in tmpCartesianProduct { //result.concept.cartesianProduct {
                 U.remove(tuple)
             }
 
@@ -74,145 +67,6 @@ public class GreCon: BMFAlgorithm {
             }
         }
         return (maxCoverConcept!, maxCoverSize)
-    }
-    
-    /*
-    private func selectMaxCover(of tuples: Set<Tuple>, from concepts: Set<FormalConcept>) -> (concept: FormalConcept, cover: Int) {
-        var maxCoverSize = 0
-        var maxCoverConcept: FormalConcept?
-        
-        for concept in concepts {
-            let intersectionCount = tuples.intersection(concept.tuples).count
-            if intersectionCount > maxCoverSize{
-                maxCoverSize = intersectionCount
-                maxCoverConcept = concept
-            }
-        }
-        return (maxCoverConcept!, maxCoverSize)
-    }
-    
-     */
-    
-    
-    private func attributeConcepts(in context: FormalContext) -> Set<FormalConcept> {
-        var concepts = Set<FormalConcept>()
-        for attribute in context.allAttributes {
-            let objects = context.down(attribute: attribute)
-            let attributes = context.up(objects: objects)
-            concepts.insert(FormalConcept(objects: objects, attributes: attributes))
-        }
-        return concepts
-    }
-    
-    
-    private func objectConcepts(in context: FormalContext) -> Set<FormalConcept> {
-        var concepts = Set<FormalConcept>()
-        for object in context.allObjects {
-            let attributes = context.up(object: object)
-            let objects = context.down(attributes: attributes)
-            concepts.insert(FormalConcept(objects: objects, attributes: attributes))
-        }
-        return concepts
-    }
-}
-
-public class SortGreCon: BMFAlgorithm {
-    
-    
-    public override func countFactors(in context: FormalContext) -> [FormalConcept] {
-        var S = PFCbO().count(in: context)
-        
-        let U = CartesianProduct(context: context)//tuples(in: context)
-        var F = [FormalConcept]()
-        let attributeConcepts = self.attributeConcepts(in: context)
-        let objectConcepts = self.objectConcepts(in: context)
-        let conceptsIntersection = attributeConcepts.intersection(objectConcepts)
-        
-        self.maxCoverTuplesIntersection = CartesianProduct(rows: context.objectCount, cols: context.attributeCount)
-        
-        for concept in S {
-            if conceptsIntersection.contains(concept) {
-                F.append(concept)
-                S.remove(concept)
-                
-                for tuple in concept.cartesianProduct {
-                    U.remove(tuple)
-                }
-            }
-        }
-        
-        
-        var sortedS = S.sorted(by: {(concept1, concept2) -> Bool in
-            return (concept1.attributes.count * concept1.objects.count) > (concept2.attributes.count * concept2.objects.count)
-        })
-        
-        while !(U.isEmpty) {
-            
-            let result = selectMaxCover(of: U, from: sortedS)
-            
-            F.append(sortedS[result.index])
-            
-            for tuple in sortedS[result.index].cartesianProduct {
-                U.remove(tuple)
-            }
-            
-            sortedS.remove(at: result.index)
-            
-            
-        }
-        return F
-    }
-    
-    fileprivate var maxCoverTuplesIntersection: CartesianProduct!
-    
-    private func selectMaxCover(of tuples: CartesianProduct, from concepts: [FormalConcept]) -> (index: Int, cover: Int) {
-        maxCoverTuplesIntersection.copyValues(tuples)
-        maxCoverTuplesIntersection.intersection(concepts[0].cartesianProduct)
-        
-        var maxCoverSize = maxCoverTuplesIntersection.count //tuples.intersection(concepts[0].tuples).count
-        var maxCoverConceptIndex: Int = 0
-        
-        
-        for i in 1..<concepts.count {
-            if concepts[i].tuples.count < maxCoverSize {
-                break
-            } else {
-                maxCoverTuplesIntersection.copyValues(tuples)
-                maxCoverTuplesIntersection.intersection(concepts[i].cartesianProduct)
-                
-                let coverSize = maxCoverTuplesIntersection.count
-                if coverSize > maxCoverSize {
-                    maxCoverSize = coverSize //tuples.intersection(concepts[i].tuples).count
-                    maxCoverConceptIndex = i
-                }
-            }
-            
-        }
-        
-        return (maxCoverConceptIndex, maxCoverSize)
-    }
-    
-    
-    
-    private func attributeConcepts(in context: FormalContext) -> Set<FormalConcept> {
-        var concepts = Set<FormalConcept>()
-        for attribute in context.allAttributes {
-            let objects = context.down(attribute: attribute)
-            let attributes = context.up(objects: objects)
-            concepts.insert(FormalConcept(objects: objects, attributes: attributes))
-        }
-        return concepts
-    }
-    
-    
-    private func objectConcepts(in context: FormalContext) -> Set<FormalConcept> {
-        var concepts = Set<FormalConcept>()
-        for object in context.allObjects {
-            let attributes = context.up(object: object)
-            let objects = context.down(attributes: attributes)
-            concepts.insert(FormalConcept(objects: objects, attributes: attributes))
-        }
-        return concepts
     }
 }
 

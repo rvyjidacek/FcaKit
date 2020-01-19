@@ -62,8 +62,8 @@ public class CbO: FcaAlgorithm {
                 context!.down(attribute: j, into: down)
                 c.intersection(with: down)
                 context!.up(objects: c, into: d)
+                
                 self.closureCount += 1
-
                 x.addMany(0..<j)
                 x.intersection(with: concept.attributes)
 
