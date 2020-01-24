@@ -9,9 +9,7 @@
 import Foundation
 
 public class NextClosure: FcaAlgorithm {
-    
-    var closureCount: Int = 0
-    
+        
     private var diff: BitSet!
     private var zeroToI: BitSet!
     private var x: BitSet!
@@ -23,7 +21,7 @@ public class NextClosure: FcaAlgorithm {
         return "Next Closure"
     }
     
-    public override func count(in context: FormalContext, outputFormat format: OutputFormat = .Object) -> Set<FormalConcept> {
+    public override func count(in context: FormalContext) -> [FormalConcept] {
         self.context = context
         self.a = context.attributeSet()
         self.aDown = context.objectSet()

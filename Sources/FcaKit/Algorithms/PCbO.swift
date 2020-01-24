@@ -28,7 +28,7 @@ public class PCbO: FcaAlgorithm {
     
     let dispatchQueue = DispatchQueue(label: "cz.inf.upol.fcakit.pcbo", qos: .background, attributes: .concurrent, autoreleaseFrequency: .workItem, target: nil)
     
-    public override func count(in context: FormalContext, outputFormat format: OutputFormat = .Object) -> Set<FormalConcept> {
+    public override func count(in context: FormalContext) -> [FormalConcept] {
         self.context = context
         self.concepts = []
 //        x = context.attributeSet()

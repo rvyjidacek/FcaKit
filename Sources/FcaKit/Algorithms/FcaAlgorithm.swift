@@ -20,12 +20,11 @@ public class FcaAlgorithm {
     
     weak var context: FormalContext?
     
-    var objectSetStack = Stack<BitSet>()
-    var attributeSetStack = Stack<BitSet>()
-    
-    public var concepts: Set<FormalConcept> = []
+    public var concepts: [FormalConcept] = []
     
     public var conceptsCount: Int = 0
+    
+    public var closureCount: Int = 0
     
     public var name: String {
         return ""
@@ -33,32 +32,14 @@ public class FcaAlgorithm {
     
     public init() { }
     
-    public func count(in context: FormalContext, outputFormat format: OutputFormat = .Object) -> Set<FormalConcept> {
+    public func count(in context: FormalContext) -> [FormalConcept] {
         return concepts
     }
     
     func store(concept: FormalConcept) {
         if FcaAlgorithm.saveConcepts {
-            concepts.insert(concept)
+            concepts.append(concept)
         }
         conceptsCount += 1
     }
-    
-    func getObjectSet(with: BitSet? = nil) -> BitSet {
-        if let set = objectSetStack.pop() {
-            with == nil ? set.erase() : set.setValues(to: with!)
-            return set
-        }
-        return with == nil ? BitSet(size: context!.objectCount) : BitSet(bitset: with!)
-    }
-    
-    func getattributeSet(with: BitSet? = nil ) -> BitSet {
-        if let set = attributeSetStack.pop() {
-            with == nil ? set.erase() : set.setValues(to: with!)
-            return set
-        }
-        return with == nil ? BitSet(size: context!.attributeCount) : BitSet(bitset: with!)
-    }
-    
-    
 }

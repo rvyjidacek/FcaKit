@@ -113,8 +113,16 @@ public class CartesianProduct: Sequence, IteratorProtocol, CustomStringConvertib
     }
     
     fileprivate func fillValues(_ a: BitSet, _ b: BitSet) {
+        var bValues: ContiguousArray<Int> = ContiguousArray(repeating: 0, count: b.count)
+        var bValuesIndex = 0
+        
+        for i in b {
+            bValues[bValuesIndex] = i
+            bValuesIndex += 1
+        }
+        
         for aValue in a {
-            for bValue in b {
+            for bValue in bValues {
                 let index = self.index(of: (aValue, bValue))
                 values.insert(index)
             }

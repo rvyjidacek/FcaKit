@@ -21,10 +21,10 @@ public class UpperNeighbor: FcaAlgorithm {
     
     
     
-    public override func count(in context: FormalContext, outputFormat format: OutputFormat = .Object) -> Set<FormalConcept> {
+    public override func count(in context: FormalContext) -> [FormalConcept] {
         self.context = context
         concepts = []
-        self.allObjects = context.allObjects
+        /*self.allObjects = context.allObjects
         self.tmpBitset = context.objectSet()
         self.b = context.objectSet()
         self.min = context.objectSet()
@@ -46,7 +46,7 @@ public class UpperNeighbor: FcaAlgorithm {
                     concepts.insert(concept)
                 }
             }
-        }
+        }*/
         
         return concepts
     }

@@ -14,9 +14,9 @@ class InClose5: FcaAlgorithm {
         return "In-Close5"
     }
     
-    override func count(in context: FormalContext, outputFormat format: OutputFormat = .Object) -> Set<FormalConcept> {
+    public override func count(in context: FormalContext) -> [FormalConcept] {
         self.context = context
-        self.concepts = Set<FormalConcept>()
+        self.concepts = []
         
         computeConcepts(from: FormalConcept(objects: context.allObjects,
                                             attributes: context.attributeSet()),

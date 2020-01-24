@@ -10,14 +10,12 @@ import Foundation
 
 
 public class FCbO: FcaAlgorithm {
-    
-    var closureCount: UInt = 0
-    
+        
     public override var name: String {
         return "Fast Close by One"
     }
     
-    public func count(in context: FormalContext, concept: FormalConcept, attribute: Attribute, failedAttributes: UpdatableSet) -> Set<FormalConcept> {
+    public func count(in context: FormalContext, concept: FormalConcept, attribute: Attribute, failedAttributes: UpdatableSet) -> [FormalConcept] {
         self.context = context
         
         yj = context.attributeSet()
@@ -34,7 +32,7 @@ public class FCbO: FcaAlgorithm {
         return concepts
     }
     
-    public override func count(in context: FormalContext, outputFormat format: OutputFormat = .Object) -> Set<FormalConcept> {
+    public override func count(in context: FormalContext) -> [FormalConcept] {
         let initialConcept = FormalConcept(objects: context.allObjects,
                                            attributes: context.up(objects: 0..<context.objectCount))
         return count(in: context, concept: initialConcept, attribute: 0, failedAttributes: UpdatableSet(size: context.attributeCount))
@@ -74,7 +72,7 @@ public class FCbO: FcaAlgorithm {
                 c.setValues(to: context!.attributes[j])
                 c.intersection(with: concept.objects)
                 
-                let d = getattributeSet()
+                let d = context!.attributeSet()
                 context?.up(objects: c, into: d)
                 
                 
@@ -85,7 +83,7 @@ public class FCbO: FcaAlgorithm {
                 l.intersection(with: yj)
                 
                 if  k == l {
-                    conceptQueue.enqueue(FormalConcept(objects: getObjectSet(with: c), attributes: d))
+                    conceptQueue.enqueue(FormalConcept(objects: BitSet(bitset: c), attributes: d))
                     attributeQueue.enqueue(j + 1)
                 } else {
                     setMy.set(index: j, set: d)

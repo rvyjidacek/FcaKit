@@ -14,11 +14,11 @@ public class InClose2: FcaAlgorithm {
         return "In-Close2"
     }
     
-    override public func count(in context: FormalContext, outputFormat format: OutputFormat = .Object) -> Set<FormalConcept> {
+    public override func count(in context: FormalContext) -> [FormalConcept] {
         self.context = context
-        cUp = getattributeSet()
-        yj = getattributeSet()
-        c = getObjectSet()
+        cUp = context.attributeSet()
+        yj = context.attributeSet()
+        c = context.objectSet()
         computeConcepts(from: FormalConcept(objects: context.allObjects, attributes: context.attributeSet()), y: 0)
         
         return concepts
@@ -47,7 +47,7 @@ public class InClose2: FcaAlgorithm {
                     context!.up(objects: c, upto: j, into: cUp)
                     
                     if yj == cUp {
-                        objectsQueue.enqueue(getObjectSet(with: c))
+                        objectsQueue.enqueue(BitSet(bitset: c))
                         attributeQueue.enqueue(j)
                     }
                 }

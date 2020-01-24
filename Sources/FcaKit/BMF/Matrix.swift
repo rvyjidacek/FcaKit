@@ -44,7 +44,7 @@ extension Matrix {
     
     public func printCoverage(cover: [CartesianProduct.Tuple]) -> String {
         var htmlString = "<table>"
-        
+    
         for row in 0..<count {
             htmlString.append("<tr>")
             for col in 0..<self[row].count {

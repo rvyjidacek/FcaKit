@@ -15,15 +15,13 @@ public class CbO: FcaAlgorithm {
         return "Close by One"
     }
     
-    var closureCount: UInt = 0
-    
-    public override func count(in context: FormalContext, outputFormat format: OutputFormat = .Object) -> Set<FormalConcept> {
+    public override func count(in context: FormalContext) -> [FormalConcept] {
         let initialConcept = FormalConcept(objects: context.allObjects,
                                                   attributes: context.up(objects: 0..<context.objectCount))
         return self.count(in: context, concept: initialConcept, attribute: 0)
     }
     
-    public func count(in context: FormalContext, concept: FormalConcept, attribute: Attribute)  -> Set<FormalConcept> {
+    public func count(in context: FormalContext, concept: FormalConcept, attribute: Attribute)  -> [FormalConcept] {
         self.context = context
         self.concepts = []
         self.closureCount = 0
@@ -37,8 +35,6 @@ public class CbO: FcaAlgorithm {
         d = context.attributeSet()
         down = context.objectSet()
         generateFrom(concept: concept, attribute: attribute)
-        objectSetStack = Stack<BitSet>()
-        attributeSetStack = Stack<BitSet>()
         return concepts
     }
     

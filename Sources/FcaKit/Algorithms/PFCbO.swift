@@ -36,7 +36,7 @@ public class PFCbO: FcaAlgorithm {
     private var b: [BitSet] = []
     private var c: [BitSet] = []
     
-    public override func count(in context: FormalContext, outputFormat format: OutputFormat = .Object) -> Set<FormalConcept> {
+    public override func count(in context: FormalContext) -> [FormalConcept] {
         self.context = context
         self.concepts = []
         self.r = -1
@@ -121,7 +121,7 @@ public class PFCbO: FcaAlgorithm {
                     c.setValues(to: context!.attributes[j])
                     c.intersection(with: concept.objects)
                     
-                    let d = getattributeSet()
+                    let d = context!.attributeSet()
                     context?.up(objects: c, into: d)
                 
                     k.setValues(to: b)
@@ -204,7 +204,7 @@ public class PFCbO: FcaAlgorithm {
                 c.setValues(to: context!.attributes[j])
                 c.intersection(with: concept.objects)
                 
-                let d = getattributeSet()
+                let d = context!.attributeSet()
                 context?.up(objects: c, into: d)
                 
                 
@@ -215,7 +215,7 @@ public class PFCbO: FcaAlgorithm {
                 l.intersection(with: yj)
                 
                 if  k == l {
-                    conceptQueue.enqueue(FormalConcept(objects: getObjectSet(with: c), attributes: d))
+                    conceptQueue.enqueue(FormalConcept(objects: BitSet(bitset: c), attributes: d))
                     attributeQueue.enqueue(j + 1)
                 } else {
                     setMy.set(index: j, set: d)

@@ -28,8 +28,8 @@ public class GreCon: BMFAlgorithm {
             
             let result = selectMaxCover(of: U, from: S)
             F.append(result.concept)
-            S.remove(result.concept)
-            
+            //S.remove(result.concept)
+            S.remove(at: result.index)
             
             /*
             for tuple in result.concept.cartesianProduct {
@@ -52,11 +52,13 @@ public class GreCon: BMFAlgorithm {
     
     fileprivate var tuplesIntersection: CartesianProduct!
     
-    private func selectMaxCover(of tuples: CartesianProduct, from concepts: Set<FormalConcept>) -> (concept: FormalConcept, cover: Int) {
+    private func selectMaxCover(of tuples: CartesianProduct, from concepts: [FormalConcept]) -> (concept: FormalConcept, cover: Int, index: Int) {
         var maxCoverSize = 0
         var maxCoverConcept: FormalConcept?
+        var index = -1
         
-        for concept in concepts {
+        for i in 0..<concepts.count { //for concept in concepts {
+            let concept = concepts[i]
             tuplesIntersection.copyValues(tuples)
             tuplesIntersection.intersection(concept.cartesianProduct)
             let intersectionCount = tuplesIntersection.count
@@ -64,9 +66,10 @@ public class GreCon: BMFAlgorithm {
             if intersectionCount > maxCoverSize {
                 maxCoverSize = intersectionCount
                 maxCoverConcept = concept
+                index = i
             }
         }
-        return (maxCoverConcept!, maxCoverSize)
+        return (maxCoverConcept!, maxCoverSize, index)
     }
 }
 

@@ -21,6 +21,7 @@ public final class GreCon2: BMFAlgorithm {
         while !(coverage.filter({ $0.coverage > 0 }).isEmpty) {
             let permutation = coverage.sorted(by: { $0.coverage > $1.coverage })
                                       .map { $0.conceptIndex }
+
             
             let maxValue = coverage[permutation[0]]
             
@@ -44,7 +45,7 @@ public final class GreCon2: BMFAlgorithm {
                                         0)
 
         }
-        
+                
         return concepts
         
     }

@@ -14,7 +14,7 @@ public class ELL: FcaAlgorithm {
         return "ELL"
     }
     
-    public override func count(in context: FormalContext, outputFormat format: OutputFormat = .Object) -> Set<FormalConcept> {
+    public override func count(in context: FormalContext) -> [FormalConcept] {
         self.context = context
         
         ell(x0: context.objectSet(), k:  context.allObjects)

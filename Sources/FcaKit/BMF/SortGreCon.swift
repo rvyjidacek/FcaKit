@@ -11,8 +11,7 @@ public class SortGreCon: BMFAlgorithm {
     
     
     public override func countFactors(in context: FormalContext) -> [FormalConcept] {
-        var S = PFCbO().count(in: context)
-        
+        let S = PFCbO().count(in: context)
         let U = CartesianProduct(context: context)//tuples(in: context)
         var F = [FormalConcept]()
        
