@@ -15,7 +15,7 @@ public class InClose2: FcaAlgorithm {
     }
     
     public override func count(in context: FormalContext) -> [FormalConcept] {
-        self.context = context
+        _ = super.count(in: context)
         cUp = context.attributeSet()
         yj = context.attributeSet()
         c = context.objectSet()

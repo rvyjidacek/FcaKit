@@ -16,16 +16,13 @@ public class CbO: FcaAlgorithm {
     }
     
     public override func count(in context: FormalContext) -> [FormalConcept] {
+        _ = super.count(in: context)
         let initialConcept = FormalConcept(objects: context.allObjects,
                                                   attributes: context.up(objects: 0..<context.objectCount))
         return self.count(in: context, concept: initialConcept, attribute: 0)
     }
     
     public func count(in context: FormalContext, concept: FormalConcept, attribute: Attribute)  -> [FormalConcept] {
-        self.context = context
-        self.concepts = []
-        self.closureCount = 0
-        self.conceptsCount = 0
         self.allAttributes = context.allAttributes
        
         

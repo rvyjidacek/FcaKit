@@ -29,13 +29,7 @@ public class PCbO: FcaAlgorithm {
     let dispatchQueue = DispatchQueue(label: "cz.inf.upol.fcakit.pcbo", qos: .background, attributes: .concurrent, autoreleaseFrequency: .workItem, target: nil)
     
     public override func count(in context: FormalContext) -> [FormalConcept] {
-        self.context = context
-        self.concepts = []
-//        x = context.attributeSet()
-//        y = context.attributeSet()
-//        c = context.objectSet()
-//        d = context.attributeSet()
-//        down = context.objectSet()
+        _ = super.count(in: context)
         
         let initialConcept = FormalConcept(objects: context.allObjects,
                                            attributes: context.up(objects: context.allObjects))
@@ -56,12 +50,6 @@ public class PCbO: FcaAlgorithm {
         parallelGenerateFrom(concept: initialConcept, attribute: 0, depthLevel: 0)
         return concepts
     }
-    
-    //    private var c: BitSet!
-    //    private var d: BitSet!
-    //    private var x: BitSet!
-    //    private var y: BitSet!
-    //    private var down: BitSet!
     
     private var down: [BitSet] = []
     private var x: [BitSet] = []

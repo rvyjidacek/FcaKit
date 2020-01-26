@@ -37,8 +37,7 @@ public class PFCbO: FcaAlgorithm {
     private var c: [BitSet] = []
     
     public override func count(in context: FormalContext) -> [FormalConcept] {
-        self.context = context
-        self.concepts = []
+        _ = super.count(in: context)
         self.r = -1
         let initialConcept = FormalConcept(objects: context.allObjects,
                                            attributes: context.up(objects: context.allObjects))

@@ -22,8 +22,7 @@ public class UpperNeighbor: FcaAlgorithm {
     
     
     public override func count(in context: FormalContext) -> [FormalConcept] {
-        self.context = context
-        concepts = []
+        _ = super.count(in: context)
         /*self.allObjects = context.allObjects
         self.tmpBitset = context.objectSet()
         self.b = context.objectSet()

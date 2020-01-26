@@ -33,6 +33,7 @@ public class FCbO: FcaAlgorithm {
     }
     
     public override func count(in context: FormalContext) -> [FormalConcept] {
+        _ = super.count(in: context)
         let initialConcept = FormalConcept(objects: context.allObjects,
                                            attributes: context.up(objects: 0..<context.objectCount))
         return count(in: context, concept: initialConcept, attribute: 0, failedAttributes: UpdatableSet(size: context.attributeCount))

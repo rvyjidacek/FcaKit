@@ -33,6 +33,10 @@ public class FcaAlgorithm {
     public init() { }
     
     public func count(in context: FormalContext) -> [FormalConcept] {
+        self.context = context
+        self.closureCount = 0
+        self.conceptsCount = 0
+        self.concepts = []
         return concepts
     }
     

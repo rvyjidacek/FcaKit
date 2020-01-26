@@ -22,7 +22,7 @@ public class NextClosure: FcaAlgorithm {
     }
     
     public override func count(in context: FormalContext) -> [FormalConcept] {
-        self.context = context
+        _ = super.count(in: context)
         self.a = context.attributeSet()
         self.aDown = context.objectSet()
         self.diff = context.attributeSet()
