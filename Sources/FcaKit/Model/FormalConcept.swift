@@ -22,7 +22,8 @@ public class FormalConcept: CustomStringConvertible, Hashable, Codable {
     }
     
     public func hash(into hasher: inout Hasher) {
-        hasher.combine(objects.hashValue ^ attributes.hashValue)
+        //hasher.combine(objects.hashValue ^ attributes.hashValue)
+        hasher.combine(objects.hashValue)
     }
     
     public var description: String {

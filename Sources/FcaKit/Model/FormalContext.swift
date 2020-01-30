@@ -32,9 +32,44 @@ public class FormalContext {
         return BitSet(size: attributeCount, values: 0..<attributeCount)
     }
     
+    public var density: Double {
+        var numberOfOnes = values.reduce(into: 0) { result, row in
+            result += row.reduce(into: 0, { result, item in result += item })
+        }
+        
+        return (Double(numberOfOnes) / Double(objectCount * attributeCount)) * 100
+    }
+    
     public var allObjects: BitSet {
         return BitSet(size: objectCount, values: 0..<objectCount)
     }
+    
+    public var attributeConcepts: Set<FormalConcept> {
+        var result = Set<FormalConcept>(minimumCapacity: attributeCount)
+        
+        for y in 0..<attributeCount {
+            let a = self.down(attribute: y)
+            var b = self.attributeSet()
+            
+            self.up(objects: a, into: b)
+            result.insert(FormalConcept(objects: a, attributes: b))
+        }
+        return result
+    }
+    
+    public var objectConcepts: Set<FormalConcept> {
+        var result = Set<FormalConcept>(minimumCapacity: objectCount)
+        
+        for x in 0..<objectCount {
+            let b = up(object: x)
+            var a = objectSet()
+            
+            down(attributes: b, into: a)
+            result.insert(FormalConcept(objects: a, attributes: b))
+        }
+        return result
+    }
+    
     
     /// 2D array with binary data. This value is useful for ELL algorithm of BMF
     public var values: Matrix = []

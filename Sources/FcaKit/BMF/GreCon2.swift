@@ -12,9 +12,13 @@ public final class GreCon2: BMFAlgorithm {
     fileprivate typealias CoverageTuple = (conceptIndex: Int, concept: FormalConcept, coverage: Int)
     
     public override func countFactors(in context: FormalContext) -> [FormalConcept] {
+        return countFactorization(using: FCbO().count(in: context), in: context)
+    }
+    
+    public func countFactorization(using conceptsArray: [FormalConcept], in context: FormalContext) -> [FormalConcept] {
         _ = super.countFactors(in: context)
         var concepts: [FormalConcept] = []
-        let conceptsArray = [FormalConcept](FCbO().count(in: context))
+        //let conceptsArray = [FormalConcept](FCbO().count(in: context))
         var coverage: [CoverageTuple] = conceptsArray.enumerated().map { ($0, $1, $1.attributes.count * $1.objects.count) }
         var cells = createCells(from: coverage)
         
@@ -47,7 +51,6 @@ public final class GreCon2: BMFAlgorithm {
         }
                 
         return concepts
-        
     }
     
     fileprivate func printCells(cells: [[Int]?]) {

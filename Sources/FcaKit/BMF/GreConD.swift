@@ -10,65 +10,6 @@ import Foundation
 
 public class GreConD: BMFAlgorithm {
     
-    
-    /*
-    public override func countFactors(in context: FormalContext) -> [FormalConcept] {
-        self.context = context
-        self.atributes = BitSet(size: self.context.attributeCount)
-        self.objects = BitSet(size: self.context.objectCount)
-        
-        let U = CartesianProduct(context: context)
-        var F: [FormalConcept] = []
-        var D = context.attributeSet()
-        
-        //var coverage: [CartesianProduct.Tuple] = []
-        
-        while !(U.isEmpty) {
-            D.erase()
-            var V = 0
-            
-            let tuples = (0..<context.attributeCount).compactMap { (attribute) -> (attribute: Int, tuples: CartesianProduct)? in
-                if D.contains(attribute) { return nil }
-                let setPlus = setPlus2(of: D, with: attribute, tuples: U)
-                
-                return setPlus.count <= V ? nil : (attribute, setPlus)
-            }
-            
-            if let max = tuples.max(by: { a, b in a.tuples.count < b.tuples.count }) {
-                D.insert(max.attribute)
-                
-                D = context.downAndUp(attributes: D)
-                //let downD = context.down(attributes: D)
-                //context.up(objects: downD, into: D)
-                
-        
-                let downD = context.down(attributes: D)
-                //context.down(attributes: D, into: downD)
-                
-                let tuples = CartesianProduct(a: D, b: downD)
-                tuples.intersection(U)
-                
-                
-                //V = tuples.count
-                V = downD.cartesianProduct(with: D).intersected(U).count//intersectioned(U).count
-                let concept = FormalConcept(objects: downD, attributes: BitSet(bitset: D))
-                F.append(concept)
-                //F.insert(concept)
-                
-                for tuple in concept.cartesianProduct {
-                    U.remove(tuple)
-                    //coverage.append(tuple)
-                }
-            }
-        }
-        
-        //print(context.values.printCoverage(cover: coverage))
-        
-        return F
-    }
-    */
-    
-    
     override var context: FormalContext! {
         didSet {
             self.atributes = BitSet(size: self.context.attributeCount)
@@ -119,9 +60,7 @@ public class GreConD: BMFAlgorithm {
                 U.remove(tuple)
             }
         }
-        
-        
-        
+
         return F
     }
     
