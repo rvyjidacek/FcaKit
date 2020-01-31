@@ -86,6 +86,9 @@ public class PCbO: FcaAlgorithm {
                     
                     y.addMany(0..<j)
                     y.intersection(with: concept.attributes)
+                    
+                    closureCount += 1
+                    
                     if x == y {
                         parallelGenerateFrom(concept: FormalConcept(objects: BitSet(bitset: c),
                                                                     attributes: BitSet(bitset: d)),
@@ -135,6 +138,11 @@ public class PCbO: FcaAlgorithm {
                 
                 y.addMany(0..<j)
                 y.intersection(with: d)
+                
+                lock.lock()
+                closureCount += 1
+                lock.unlock()
+                
                 if x == y {
                     generateFrom(concept: FormalConcept(objects: BitSet(bitset: c),
                                                         attributes: BitSet(bitset: d)),

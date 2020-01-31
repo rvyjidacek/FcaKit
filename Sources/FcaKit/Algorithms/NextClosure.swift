@@ -79,6 +79,8 @@ public class NextClosure: FcaAlgorithm {
         a.intersection(with: set)
         a.insert(i)
         
+        closureCount += 1
+        
         context?.down(attributes: a, into: aDown)
         return context!.up(objects: aDown)
     }

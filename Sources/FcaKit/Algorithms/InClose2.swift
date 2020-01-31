@@ -46,6 +46,8 @@ public class InClose2: FcaAlgorithm {
                     
                     context!.up(objects: c, upto: j, into: cUp)
                     
+                    closureCount += 1
+                    
                     if yj == cUp {
                         objectsQueue.enqueue(BitSet(bitset: c))
                         attributeQueue.enqueue(j)

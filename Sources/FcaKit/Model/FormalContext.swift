@@ -33,7 +33,7 @@ public class FormalContext {
     }
     
     public var density: Double {
-        var numberOfOnes = values.reduce(into: 0) { result, row in
+        let numberOfOnes = values.reduce(into: 0) { result, row in
             result += row.reduce(into: 0, { result, item in result += item })
         }
         
@@ -49,7 +49,7 @@ public class FormalContext {
         
         for y in 0..<attributeCount {
             let a = self.down(attribute: y)
-            var b = self.attributeSet()
+            let b = self.attributeSet()
             
             self.up(objects: a, into: b)
             result.insert(FormalConcept(objects: a, attributes: b))
@@ -62,7 +62,7 @@ public class FormalContext {
         
         for x in 0..<objectCount {
             let b = up(object: x)
-            var a = objectSet()
+            let a = objectSet()
             
             down(attributes: b, into: a)
             result.insert(FormalConcept(objects: a, attributes: b))

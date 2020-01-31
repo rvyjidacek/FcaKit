@@ -49,7 +49,10 @@ public class ELL: FcaAlgorithm {
             allObjects.addMany(0..<context!.objectCount)
             allObjects.difference(x0)
             
-            let aValues = allObjects.filter({ z.isSubset(of: context!.up(object: $0)) })
+            let aValues = allObjects.filter({
+                closureCount += 1
+                return z.isSubset(of: context!.up(object: $0))
+            })
             
             //let a = BitSet(size: context!.objectCount, values: aValues)
             a.erase()
@@ -64,7 +67,6 @@ public class ELL: FcaAlgorithm {
                                                 attributes: BitSet(bitset: z))
                     concepts.append(concept)
                 }
-                
                 ell(x0: v, k: k.differenced(a))
             }
             
@@ -72,6 +74,7 @@ public class ELL: FcaAlgorithm {
                 // z0.intersected(context!.up(object: $0)).isSubset(of: i0Up)
                 z0Tmp.setValues(to: z0)
                 z0Tmp.intersection(with: context!.up(object: $0))
+                closureCount += 1
                 return z0Tmp.isSubset(of: i0Up)
             })
             

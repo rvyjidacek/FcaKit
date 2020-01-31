@@ -130,6 +130,9 @@ public class PFCbO: FcaAlgorithm {
                     l.intersection(with: yj)
                     
                     //if b.intersected(yj) == d.intersected(yj) {
+                    
+                    closureCount += 1
+                    
                     if  k == l {
                         conceptQueue.enqueue(FormalConcept(objects: BitSet(bitset: c), attributes: d))
                         attributeQueue.enqueue(j + 1)
@@ -212,6 +215,10 @@ public class PFCbO: FcaAlgorithm {
                 
                 l.setValues(to: d)
                 l.intersection(with: yj)
+                
+                mutex.lock()
+                closureCount += 1
+                mutex.unlock()
                 
                 if  k == l {
                     conceptQueue.enqueue(FormalConcept(objects: BitSet(bitset: c), attributes: d))
