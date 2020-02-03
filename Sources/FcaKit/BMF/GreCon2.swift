@@ -17,19 +17,19 @@ public final class GreCon2: BMFAlgorithm {
     
     public func countFactorization(using conceptsArray: [FormalConcept], in context: FormalContext) -> [FormalConcept] {
         _ = super.countFactors(in: context)
-        var concepts: [FormalConcept] = []
+        var factors: [FormalConcept] = []
         //let conceptsArray = [FormalConcept](FCbO().count(in: context))
         var coverage: [CoverageTuple] = conceptsArray.enumerated().map { ($0, $1, $1.attributes.count * $1.objects.count) }
         var cells = createCells(from: coverage)
         
         while !(coverage.filter({ $0.coverage > 0 }).isEmpty) {
-            let permutation = coverage.sorted(by: { $0.coverage > $1.coverage })
-                                      .map { $0.conceptIndex }
+//            let permutation = coverage.sorted(by: { $0.coverage > $1.coverage })
+//                                      .map { $0.conceptIndex }
 
             
-            let maxValue = coverage[permutation[0]]
+            let maxValue = coverage.max(by: { a, b in a.coverage < b.coverage })! //coverage[permutation[0]]
             
-            concepts.append(maxValue.concept)
+            factors.append(maxValue.concept)
                         
             for tuple in maxValue.concept.cartesianProduct {
                 let index = self.index(of: tuple)
@@ -43,14 +43,17 @@ public final class GreCon2: BMFAlgorithm {
                 cells[index] = nil
             }
             
+            coverage[maxValue.conceptIndex] = (maxValue.conceptIndex,
+                                               maxValue.concept,
+                                               0)
             
-            coverage[permutation[0]] = (coverage[permutation[0]].conceptIndex,
-                                        coverage[permutation[0]].concept,
-                                        0)
+            //coverage[permutation[0]] = (coverage[permutation[0]].conceptIndex,
+             //                           coverage[permutation[0]].concept,
+               //                         0)
 
         }
                 
-        return concepts
+        return factors
     }
     
     fileprivate func printCells(cells: [[Int]?]) {
