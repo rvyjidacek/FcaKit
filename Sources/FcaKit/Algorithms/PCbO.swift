@@ -15,9 +15,9 @@ public class PCbO: FcaAlgorithm {
         return "Parallel Close by One"
     }
     
-    private let numberOfThreads: Int = 4
+    public var numberOfThreads: Int = 4
     
-    private let stopRecursionLevel: UInt = 2
+    public var stopRecursionLevel: UInt = 2
     
     private var r: Int = -1
     
