@@ -6,7 +6,6 @@
 //  Copyright © 2019 Palacky University Olomouc. All rights reserved.
 //
 
-import Foundation
 
 class InClose5: FcaAlgorithm {
     

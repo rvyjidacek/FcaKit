@@ -6,8 +6,9 @@
 //  Copyright © 2019 Palacky University Olomouc. All rights reserved.
 //
 
+/*
+import Darwin
 import Foundation
-
 
 @available(OSX 10.12, *)
 public class PFCbO: FcaAlgorithm {
@@ -22,7 +23,9 @@ public class PFCbO: FcaAlgorithm {
     
     private var r: Int = -1
     
-    let mutex = NSLock()
+    //let mutex = NSLock()
+    
+    var mutex = pthread_mutex_t()
     
     private var conceptQueues: [Queue<FormalConcept>] = []
     private var attributeQueues: [Queue<Attribute>] = []
@@ -38,6 +41,9 @@ public class PFCbO: FcaAlgorithm {
     
     public override func count(in context: FormalContext) -> [FormalConcept] {
         _ = super.count(in: context)
+        
+        
+        
         self.r = -1
         let initialConcept = FormalConcept(objects: context.allObjects,
                                            attributes: context.up(objects: context.allObjects))
@@ -70,9 +76,11 @@ public class PFCbO: FcaAlgorithm {
     }
     
     override func store(concept: FormalConcept) {
-        mutex.lock()
+        pthread_mutex_lock(&mutex)
+        //mutex.lock()
         super.store(concept: concept)
-        mutex.unlock()
+        pthread_mutex_unlock(&mutex)
+        //mutex.unlock()
     }
     
     private func parallelGenerateFrom(concept: FormalConcept, attribute: Attribute, attributeSets: UpdatableSet, depthLevel: UInt) {
@@ -153,6 +161,8 @@ public class PFCbO: FcaAlgorithm {
         
         
         if depthLevel == 0 {
+            
+            
             DispatchQueue.concurrentPerform(iterations: numberOfThreads) { (id) in
                 let conceptsQueue = self.conceptQueues[id]
                 let attributesQueue = self.attributeQueues[id]
@@ -216,9 +226,11 @@ public class PFCbO: FcaAlgorithm {
                 l.setValues(to: d)
                 l.intersection(with: yj)
                 
-                mutex.lock()
+                //mutex.lock()
+                pthread_mutex_lock(&mutex)
                 closureCount += 1
-                mutex.unlock()
+                pthread_mutex_unlock(&mutex)
+                //mutex.unlock()
                 
                 if  k == l {
                     conceptQueue.enqueue(FormalConcept(objects: BitSet(bitset: c), attributes: d))
@@ -235,3 +247,4 @@ public class PFCbO: FcaAlgorithm {
     }
     
 }
+*/

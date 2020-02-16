@@ -6,7 +6,6 @@
 //  Copyright © 2019 Palacky University Olomouc. All rights reserved.
 //
 
-import Foundation
 
 public class GreConD: BMFAlgorithm {
     
@@ -19,6 +18,7 @@ public class GreConD: BMFAlgorithm {
         }
     }
     
+    public var count = 0
     
     public override func countFactors(in context: FormalContext) -> [FormalConcept] {
         self.context = context
@@ -38,6 +38,7 @@ public class GreConD: BMFAlgorithm {
             
             while let j = findAttributeWhichMaximizeCoverage(D, V, U) {
                 D.insert(j)
+                
                 D = context.downAndUp(attributes: D)
 
                 context.down(attributes: D, into: downD)
@@ -47,6 +48,9 @@ public class GreConD: BMFAlgorithm {
                 tmpCartesianProduct.intersection(U)
 
                 V = tmpCartesianProduct.count
+                
+                concepts.insert(FormalConcept(objects: BitSet(bitset: downD),
+                                              attributes: BitSet(bitset: D)))
             }
             
             let concept = FormalConcept(objects: BitSet(bitset: downD),
@@ -64,12 +68,15 @@ public class GreConD: BMFAlgorithm {
         return F
     }
     
+    
+    
     private func findAttributeWhichMaximizeCoverage(_ D: BitSet, _ V: Int, _ U: CartesianProduct) -> Attribute? {
         var maxValue = 0
         var maxAttribute: Int? = nil
         
         for j in 0..<context.attributeCount { //context.allAttributes {
             if !(D.contains(j)) {
+                count += 1
                 let dPlusJ = setPlus(of: D, with: j, tuples: U)
                 if dPlusJ.count > V && dPlusJ.count > maxValue { //dPlusJ.count > maxValue {
                     maxValue = dPlusJ.count
@@ -94,17 +101,21 @@ public class GreConD: BMFAlgorithm {
     private var objects: BitSet!
     private var cartesianProduct: CartesianProduct!
     
+    public var concepts = Set<FormalConcept>()
     
     private func setPlus(of attributeSet: BitSet, with attribute: Attribute, tuples: CartesianProduct) -> CartesianProduct {
         atributes.setValues(to: attributeSet)
         atributes.insert(attribute)
-    
+            
         context.down(attributes: atributes, into: objects)
         context.up(objects: objects, into: atributes)
         
         cartesianProduct.values.erase()
         cartesianProduct.insert(a: objects, b: atributes)
         cartesianProduct.intersection(tuples)
+        
+        //print(FormalConcept(objects: BitSet(bitset: objects), attributes: BitSet(bitset: atributes)))
+        
         return cartesianProduct
     }
 }

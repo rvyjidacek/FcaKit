@@ -5,7 +5,6 @@
 //  Created by Roman Vyjídáček on 15/10/2019.
 //
 
-import Foundation
 
 public final class GreCon2: BMFAlgorithm {
     
@@ -27,7 +26,8 @@ public final class GreCon2: BMFAlgorithm {
 //                                      .map { $0.conceptIndex }
 
             
-            let maxValue = coverage.max(by: { a, b in a.coverage < b.coverage })! //coverage[permutation[0]]
+            let maxValue = coverage.max(by: { a, b in a.coverage < b.coverage })!
+//            let maxValue = coverage[permutation[0]]
             
             factors.append(maxValue.concept)
                         
@@ -47,9 +47,9 @@ public final class GreCon2: BMFAlgorithm {
                                                maxValue.concept,
                                                0)
             
-            //coverage[permutation[0]] = (coverage[permutation[0]].conceptIndex,
-             //                           coverage[permutation[0]].concept,
-               //                         0)
+//            coverage[permutation[0]] = (coverage[permutation[0]].conceptIndex,
+//                                        coverage[permutation[0]].concept,
+//                                        0)
 
         }
                 

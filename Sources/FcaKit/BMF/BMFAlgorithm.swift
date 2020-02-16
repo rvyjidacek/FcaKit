@@ -5,7 +5,6 @@
 //  Created by Roman Vyjídáček on 15/10/2019.
 //
 
-import Foundation
 
 public class BMFAlgorithm {
     
