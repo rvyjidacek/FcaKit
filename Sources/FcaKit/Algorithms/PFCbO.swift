@@ -205,7 +205,6 @@ public class PFCbO: FcaAlgorithm {
             y.setValues(to: b)
             y.intersection(with: yj)
             
-            
             if !b.contains(j) && x.isSubset(of: y) {
                 c.setValues(to: context!.attributes[j])
                 c.intersection(with: concept.objects)
