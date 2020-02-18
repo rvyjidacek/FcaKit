@@ -22,7 +22,6 @@ public class FormalConcept: CustomStringConvertible, Hashable, Codable {
     }
     
     public func hash(into hasher: inout Hasher) {
-        //hasher.combine(objects.hashValue ^ attributes.hashValue)
         hasher.combine(objects.hashValue)
     }
     
@@ -37,10 +36,6 @@ public class FormalConcept: CustomStringConvertible, Hashable, Codable {
     public lazy var tuples: CartesianProduct = {
         return objects.cartesianProduct(with: attributes)
     }()
-    
-//    public lazy var cartesianProduct: CartesianProduct = {
-//        CartesianProduct(a: objects, b: attributes)
-//    }()
     
     public var cartesianProduct: CartesianProduct {
            CartesianProduct(a: objects, b: attributes)
