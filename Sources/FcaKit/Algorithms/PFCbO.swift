@@ -6,8 +6,6 @@
 //  Copyright © 2019 Palacky University Olomouc. All rights reserved.
 //
 
-/*
-import Darwin
 import Foundation
 
 @available(OSX 10.12, *)
@@ -23,10 +21,8 @@ public class PFCbO: FcaAlgorithm {
     
     private var r: Int = -1
     
-    //let mutex = NSLock()
-    
-    var mutex = pthread_mutex_t()
-    
+    let mutex = NSLock()
+        
     private var conceptQueues: [Queue<FormalConcept>] = []
     private var attributeQueues: [Queue<Attribute>] = []
     private var failedAttributes: [Queue<UpdatableSet>] = []
@@ -76,11 +72,9 @@ public class PFCbO: FcaAlgorithm {
     }
     
     override func store(concept: FormalConcept) {
-        pthread_mutex_lock(&mutex)
-        //mutex.lock()
+        mutex.lock()
         super.store(concept: concept)
-        pthread_mutex_unlock(&mutex)
-        //mutex.unlock()
+        mutex.unlock()
     }
     
     private func parallelGenerateFrom(concept: FormalConcept, attribute: Attribute, attributeSets: UpdatableSet, depthLevel: UInt) {
@@ -226,11 +220,9 @@ public class PFCbO: FcaAlgorithm {
                 l.setValues(to: d)
                 l.intersection(with: yj)
                 
-                //mutex.lock()
-                pthread_mutex_lock(&mutex)
+                mutex.lock()
                 closureCount += 1
-                pthread_mutex_unlock(&mutex)
-                //mutex.unlock()
+                mutex.unlock()
                 
                 if  k == l {
                     conceptQueue.enqueue(FormalConcept(objects: BitSet(bitset: c), attributes: d))
@@ -245,6 +237,4 @@ public class PFCbO: FcaAlgorithm {
             fastGenerateFrom(concept: conceptQueue.dequeue()!, attribute: attributeQueue.dequeue()!, attributeSets: setMy, processId: processId)
         }
     }
-    
 }
-*/

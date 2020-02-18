@@ -6,8 +6,7 @@
 //  Copyright © 2019 Palacky University Olomouc. All rights reserved.
 //
 
-/*
-import Darwin
+
 import Foundation
 
 @available(OSX 10.12, *)
@@ -23,9 +22,7 @@ public class PCbO: FcaAlgorithm {
     
     private var r: Int = -1
     
-    //let lock = NSLock()
-    
-    var mutex = pthread_mutex_t()
+    let lock = NSLock()
     
     private var conceptQueues: [Queue<FormalConcept>] = []
     private var attributeQueues: [Queue<Attribute>] = []
@@ -141,11 +138,9 @@ public class PCbO: FcaAlgorithm {
                 y.addMany(0..<j)
                 y.intersection(with: d)
                 
-                //lock.lock()
-                pthread_mutex_lock(&mutex)
+                lock.lock()
                 closureCount += 1
-                pthread_mutex_unlock(&mutex)
-                //lock.unlock()
+                lock.unlock()
                 
                 if x == y {
                     generateFrom(concept: FormalConcept(objects: BitSet(bitset: c),
@@ -157,11 +152,9 @@ public class PCbO: FcaAlgorithm {
     }
     
     override func store(concept: FormalConcept) {
-        //lock.lock()
-        pthread_mutex_lock(&mutex)
+        lock.lock()
         super.store(concept: concept)
-        pthread_mutex_unlock(&mutex)
-        //lock.unlock()
+        lock.unlock()
     }
     
     private func computeClosure(concept: FormalConcept, attribute: Attribute) -> FormalConcept {
@@ -178,4 +171,4 @@ public class PCbO: FcaAlgorithm {
         return FormalConcept(objects: objects, attributes: attributes)
     }
 }
-*/
+
