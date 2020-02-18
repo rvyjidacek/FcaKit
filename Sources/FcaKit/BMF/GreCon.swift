@@ -20,28 +20,17 @@ public class GreCon: BMFAlgorithm {
         var F = [FormalConcept]()
         let tmpCartesianProduct = CartesianProduct(rows: context.objectCount,
                                                    cols: context.attributeCount)
-        
-        //self.covered = CartesianProduct(rows: context.objectCount, cols: context.attributeCount)
-        
+                
         while !(U.isEmpty) {
-            //covered.values.erase()
-            
             let result = selectMaxCover(of: U, from: S)
             F.append(result.concept)
-            //S.remove(result.concept)
             S.remove(at: result.index)
-            
-            /*
-            for tuple in result.concept.cartesianProduct {
-                covered.insert(tuple)
-            }
-             */
             
             tmpCartesianProduct.values.erase()
             tmpCartesianProduct.insert(a: result.concept.objects,
                                        b: result.concept.attributes)
             
-            for tuple in tmpCartesianProduct { //result.concept.cartesianProduct {
+            for tuple in tmpCartesianProduct {
                 U.remove(tuple)
             }
 
@@ -57,7 +46,7 @@ public class GreCon: BMFAlgorithm {
         var maxCoverConcept: FormalConcept?
         var index = -1
         
-        for i in 0..<concepts.count { //for concept in concepts {
+        for i in 0..<concepts.count { 
             let concept = concepts[i]
             tuplesIntersection.copyValues(tuples)
             tuplesIntersection.intersection(concept.cartesianProduct)

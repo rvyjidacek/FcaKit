@@ -17,9 +17,7 @@ public class GreConD: BMFAlgorithm {
                                                      cols: context.attributeCount)
         }
     }
-    
-    public var count = 0
-    
+        
     public override func countFactors(in context: FormalContext) -> [FormalConcept] {
         self.context = context
         let U = CartesianProduct(context: context)
@@ -48,9 +46,6 @@ public class GreConD: BMFAlgorithm {
                 tmpCartesianProduct.intersection(U)
 
                 V = tmpCartesianProduct.count
-                
-                concepts.insert(FormalConcept(objects: BitSet(bitset: downD),
-                                              attributes: BitSet(bitset: D)))
             }
             
             let concept = FormalConcept(objects: BitSet(bitset: downD),
@@ -76,7 +71,6 @@ public class GreConD: BMFAlgorithm {
         
         for j in 0..<context.attributeCount { //context.allAttributes {
             if !(D.contains(j)) {
-                count += 1
                 let dPlusJ = setPlus(of: D, with: j, tuples: U)
                 if dPlusJ.count > V && dPlusJ.count > maxValue { //dPlusJ.count > maxValue {
                     maxValue = dPlusJ.count
@@ -88,14 +82,6 @@ public class GreConD: BMFAlgorithm {
         return maxAttribute
     }
     
-//    private func setPlus(of attributeSet: BitSet, with attribute: Attribute, tuples: CartesianProduct) -> CartesianProduct {
-//        var a = BitSet(bitset: attributeSet)
-//        a.insert(attribute)
-//        a = context.down(attributes: a)
-//
-//        let b = context.up(objects: a)
-//        return tuples.intersected(CartesianProduct(a: a, b: b))
-//    }
     
     private var atributes: BitSet!
     private var objects: BitSet!
@@ -113,9 +99,7 @@ public class GreConD: BMFAlgorithm {
         cartesianProduct.values.erase()
         cartesianProduct.insert(a: objects, b: atributes)
         cartesianProduct.intersection(tuples)
-        
-        //print(FormalConcept(objects: BitSet(bitset: objects), attributes: BitSet(bitset: atributes)))
-        
+            
         return cartesianProduct
     }
 }
