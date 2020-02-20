@@ -13,19 +13,19 @@ public class ELL: FcaAlgorithm {
         return "ELL"
     }
     
-    public override func count(in context: FormalContext) -> [FormalConcept] {
-        _ = super.count(in: context)
-        z = context.attributeSet()
-        allObjects = context.allObjects
-        a = context.objectSet()
-        z0Tmp = context.attributeSet()
-        r = context.objectSet()
-        
-        ell(x0: context.objectSet(), k:  context.allObjects)
-        store(concept: FormalConcept(objects: context.upAndDown(objects: BitSet(size: context.attributeCount)), attributes: context.allAttributes))
-        
-        return concepts
-    }
+//    public override func count(in context: FormalContext) -> [FormalConcept] {
+//        _ = super.count(in: context)
+//        z = context.attributeSet()
+//        allObjects = context.allObjects
+//        a = context.objectSet()
+//        z0Tmp = context.attributeSet()
+//        r = context.objectSet()
+//
+//        ell(x0: context.objectSet(), k:  context.allObjects)
+//        store(concept: FormalConcept(objects: context.upAndDown(objects: BitSet(size: context.attributeCount)), attributes: context.allAttributes))
+//
+//        return concepts
+//    }
     
     private var z: BitSet!
     private var allObjects: BitSet!
@@ -82,5 +82,68 @@ public class ELL: FcaAlgorithm {
             r.addMany(rValues)
             ell(x0: x0, k: k.differenced(r))
         }
+    }
+    
+    public var L: [BitSet] = []
+    public var Beta = 0
+    
+    
+    public override func count(in context: FormalContext) -> [FormalConcept] {
+        _ = super.count(in: context)
+        self.context = context
+        L.append(context.down(attributes: context.allAttributes))
+        Beta = context.objectCount
+
+        return concepts
+    }
+    
+    public func ff(A: BitSet, J: BitSet) {
+        if context!.down(attributes: A).count < Beta || J.isEmpty {
+            return
+        }
+        
+        let j = J.element()!
+        let B = atr(A: A, j: j)
+        let C = rej(A: A, j: j)
+        
+        let ADown = context!.down(attributes: A)
+        let BDown = context!.down(attributes: B)
+        
+        if B.isSubset(of: J) && ADown.intersected(BDown).count >= Beta {
+            L.append(A.unioned(B))
+            ff(A: A.unioned(B), J: J.differenced(B))
+        }
+        ff(A: A, J: J.differenced(C))
+        
+    }
+    
+    private func t(A: BitSet, a: Attribute) -> BitSet {
+        let ADown = context!.down(attributes: A)
+        let aDown = context!.down(attribute: a)
+        return ADown.intersected(aDown)
+    }
+    
+    private func atr(A: BitSet, j: Attribute) -> BitSet {
+        let atributes = context!.allAttributes
+        atributes.difference(A)
+        let values = atributes.compactMap { (a) -> Attribute? in
+            return t(A: A, a: j).isSubset(of: t(A: A, a: a)) ? a : nil
+        }
+        
+        let result = context!.attributeSet()
+        result.addMany(values)
+        return result
+    }
+    
+    private func rej(A: BitSet, j: Attribute) -> BitSet {
+        let atributes = context!.allAttributes
+        atributes.difference(A)
+        let values = atributes.compactMap { (a) -> Attribute? in
+            return t(A: A, a: a).isSubset(of: t(A: A, a: j)) ? a : nil
+        }
+        
+        let result = context!.attributeSet()
+        result.addMany(values)
+        return result
     }
 }
