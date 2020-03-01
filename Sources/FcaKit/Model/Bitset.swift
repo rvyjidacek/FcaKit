@@ -417,6 +417,16 @@ Hashable, ExpressibleByArrayLiteral {
         return iterator.next()
     }
     
+    public func randomElement() -> Int? {
+        while true {
+            let value = Int.random(in: 0..<size)
+            if self.contains(value) {
+                return value
+            }
+        }
+        return nil
+    }
+    
     public func element(at index: Int) -> Int? {
         var elementIndex = 0
         
