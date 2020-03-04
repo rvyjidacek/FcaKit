@@ -91,9 +91,14 @@ public class ELL: FcaAlgorithm {
         _ = super.count(in: context)
         self.context = context
         L.append(context.down(attributes: context.allAttributes))
-        Beta = context.objectCount
+        //Beta = context.objectCount
         
         allAttributes = context.allAttributes
+        
+        allArrowDown = (0..<context.attributeCount).map { context.down(attribute: $0) }
+        
+        ADown = context.objectSet()
+        BDown = context.objectSet()
         
         aDown1 = context.objectSet()
         ADown1 = context.objectSet()
@@ -110,75 +115,111 @@ public class ELL: FcaAlgorithm {
     
     private var intersection: BitSet!
     private var B: BitSet!
+    private var ADown: BitSet!
+    private var BDown: BitSet!
     
     public func ff(A: BitSet, J: BitSet) {
-        if context!.down(attributes: A).count < Beta || J.isEmpty {
+        context!.down(attributes: A, into: ADown)
+        if ADown.count < Beta || J.isEmpty {
             return
         }
         
         //let j = J.element()! // slower than randomElement
         let j = J.randomElement()!
-        let B = atr(A: A, j: j)
-        let C = rej(A: A, j: j)
-
-        let ADown = context!.down(attributes: A)
-        let BDown = context!.down(attributes: B)
         
+        let atrAndRej = countAtrAndRejSets(A: A, j: j)
+        
+        let B = atrAndRej.atr
+        let C = atrAndRej.rej
+
+        //context!.down(attributes: A, into: ADown)
+        //context!.down(attributes: B, into: BDown)
+                
         if B.isSubset(of: J) && ADown.intersectionCount(BDown) >= Beta {
             L.append(A.unioned(B))
             ff(A: A.unioned(B), J: J.differenced(B))
         }
-        ff(A: A, J: J.differenced(C))
+        
+        J.difference(C)
+        ff(A: A, J: J)
         
     }
     
     private var allAttributes: BitSet!
 
+    private var allArrowDown: [BitSet] = []
+    
     private var aDown1: BitSet!
     private var aDown2: BitSet!
     
     private var ADown1: BitSet!
     private var ADown2: BitSet!
     
-    private func atr(A: BitSet, j: Attribute) -> BitSet {
-        allAttributes.setAll()
-        allAttributes.difference(A)
-        let values = allAttributes.compactMap { (a) -> Attribute? in
-            
-            context!.down(attributes: A, into: ADown1)
-            context!.down(attribute: j, into: aDown1)
-            aDown1.intersection(with: ADown1)
-            
-            context!.down(attributes: A, into: ADown2)
-            context!.down(attribute: a, into: aDown2)
-            aDown2.intersection(with: ADown2)
-            
-            return aDown1.isSubset(of: aDown2) ? a : nil
-        }
+    private func countAtrAndRejSets(A: BitSet, j: Attribute) -> (atr: BitSet, rej: BitSet) {
+        let atr = context!.attributeSet()
+        let rej = context!.attributeSet()
         
-        let result = context!.attributeSet()
-        result.addMany(values)
-        return result
+        for a in 0..<context!.attributeCount {
+            if allAttributes.contains(a) && !(A.contains(a)) {
+                context!.down(attributes: A, into: ADown1)
+                context!.down(attribute: j, into: aDown1)
+                ADown1.intersection(with: aDown1)
+                
+                context!.down(attributes: A, into: ADown2)
+                context!.down(attribute: a, into: aDown2)
+                ADown2.intersection(with: aDown2)
+                
+                if ADown1.isSubset(of: ADown2) {
+                    atr.insert(a)
+                }
+                
+                if ADown2.isSubset(of: aDown1) {
+                    rej.insert(a)
+                }
+            }
+        }
+        return (atr, rej)
     }
     
-    private func rej(A: BitSet, j: Attribute) -> BitSet {
-        allAttributes.setAll()
-        allAttributes.difference(A)
-        let values = allAttributes.compactMap { (a) -> Attribute? in
-            
-            context!.down(attributes: A, into: ADown1)
-            context!.down(attribute: a, into: aDown1)
-            aDown1.intersection(with: ADown1)
-            
-            context!.down(attributes: A, into: ADown2)
-            context!.down(attribute: j, into: aDown2)
-            aDown2.intersection(with: ADown2)
-            
-            return aDown1.isSubset(of: aDown2) ? a : nil
-        }
-        
-        let result = context!.attributeSet()
-        result.addMany(values)
-        return result
-    }
+//    private func atr(A: BitSet, j: Attribute) -> BitSet {
+//        allAttributes.setAll()
+//        allAttributes.difference(A)
+//        let values = allAttributes.compactMap { (a) -> Attribute? in
+//
+//            context!.down(attributes: A, into: ADown1)
+//            context!.down(attribute: j, into: aDown1)
+//            aDown1.intersection(with: ADown1)
+//
+//            context!.down(attributes: A, into: ADown2)
+//            context!.down(attribute: a, into: aDown2)
+//            aDown2.intersection(with: ADown2)
+//
+//            return aDown1.isSubset(of: aDown2) ? a : nil
+//        }
+//
+//        let result = context!.attributeSet()
+//        result.addMany(values)
+//        return result
+//    }
+//
+//    private func rej(A: BitSet, j: Attribute) -> BitSet {
+//        allAttributes.setAll()
+//        allAttributes.difference(A)
+//        let values = allAttributes.compactMap { (a) -> Attribute? in
+//
+//            context!.down(attributes: A, into: ADown1)
+//            context!.down(attribute: a, into: aDown1)
+//            aDown1.intersection(with: ADown1)
+//
+//            context!.down(attributes: A, into: ADown2)
+//            context!.down(attribute: j, into: aDown2)
+//            aDown2.intersection(with: ADown2)
+//
+//            return aDown1.isSubset(of: aDown2) ? a : nil
+//        }
+//
+//        let result = context!.attributeSet()
+//        result.addMany(values)
+//        return result
+//    }
 }
