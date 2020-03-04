@@ -95,8 +95,6 @@ public class ELL: FcaAlgorithm {
         
         allAttributes = context.allAttributes
         
-        allArrowDown = (0..<context.attributeCount).map { context.down(attribute: $0) }
-        
         ADown = context.objectSet()
         BDown = context.objectSet()
         
@@ -135,7 +133,7 @@ public class ELL: FcaAlgorithm {
         //context!.down(attributes: A, into: ADown)
         //context!.down(attributes: B, into: BDown)
                 
-        if B.isSubset(of: J) && ADown.intersectionCount(BDown) >= Beta {
+        if B.isSubset(of: J) { //&& ADown.intersectionCount(BDown) >= Beta {
             L.append(A.unioned(B))
             ff(A: A.unioned(B), J: J.differenced(B))
         }
@@ -147,8 +145,6 @@ public class ELL: FcaAlgorithm {
     
     private var allAttributes: BitSet!
 
-    private var allArrowDown: [BitSet] = []
-    
     private var aDown1: BitSet!
     private var aDown2: BitSet!
     
@@ -163,17 +159,17 @@ public class ELL: FcaAlgorithm {
             if allAttributes.contains(a) && !(A.contains(a)) {
                 context!.down(attributes: A, into: ADown1)
                 context!.down(attribute: j, into: aDown1)
-                ADown1.intersection(with: aDown1)
+                aDown1.intersection(with: ADown1)
                 
                 context!.down(attributes: A, into: ADown2)
                 context!.down(attribute: a, into: aDown2)
-                ADown2.intersection(with: aDown2)
+                aDown2.intersection(with: ADown2)
                 
-                if ADown1.isSubset(of: ADown2) {
+                if aDown1.isSubset(of: aDown2) {
                     atr.insert(a)
                 }
                 
-                if ADown2.isSubset(of: aDown1) {
+                if aDown2.isSubset(of: aDown1) {
                     rej.insert(a)
                 }
             }
