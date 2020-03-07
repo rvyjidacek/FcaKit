@@ -8,6 +8,14 @@
 
 import Foundation
 
+extension Character {
+    
+    static let zero:  Character = Character(unicodeScalarLiteral: "0")
+    static let nine:  Character = Character(unicodeScalarLiteral: "9")
+    static let space: Character = Character(unicodeScalarLiteral: " ")
+    static let newLine: Character = Character(unicodeScalarLiteral: "\n")
+}
+
 public class FormalContext {
     
     public var objectNames: [String] = []
@@ -94,6 +102,78 @@ public class FormalContext {
         self.allAttributes.setAll()
     }
     
+    public init(path: String) {
+        var line = 0
+        let file = fopen(path, "r")
+        var attribute = 0
+        
+        
+        // READ CONTEXT SIZE
+        let size = readContextSize(file: file)
+        
+        objects = (0..<size.rows).map { _ in BitSet(size: size.cols) }
+        attributes = (0..<size.cols).map { _ in BitSet(size: size.rows) }
+        
+        // READ CONTEXT VALUES
+        
+        while feof(file) == 0 {
+            let asciiCode = fgetc(file)
+            if asciiCode < 0 { return }
+            
+            let char: Character = Character(Unicode.Scalar(UInt8(asciiCode)))
+            
+            if char.asciiValue! == Character.space.asciiValue! {
+                objects[line].insert(attribute)
+                attributes[attribute].insert(line)
+                attribute = 0
+                continue
+            }
+            
+            if char.asciiValue! >= Character.zero.asciiValue! &&
+                char.asciiValue! <= Character.nine.asciiValue! {
+                attribute *= 10
+                attribute += Int(char.asciiValue! - Character.zero.asciiValue!)
+            }
+            
+            if char.asciiValue! == Character.newLine.asciiValue! {
+                attribute = 0
+                line += 1
+            }
+            
+        }
+    }
+    
+    private func readContextSize(file: UnsafeMutablePointer<FILE>?)  -> (rows: Int, cols: Int) {
+        var numberOfObjects = 0
+        var numberOfAttributes = 0
+        while feof(file) == 0 {
+            let asciiCode = fgetc(file)
+            let char: Character = Character(Unicode.Scalar(UInt8(asciiCode)))
+            
+            if char.asciiValue! >= Character.zero.asciiValue! &&
+                char.asciiValue! <= Character.nine.asciiValue! {
+                numberOfObjects *= 10
+                numberOfObjects += Int(char.asciiValue! - Character.zero.asciiValue!)
+            } else {
+                break
+            }
+        }
+        
+        while feof(file) == 0 {
+            let asciiCode = fgetc(file)
+            let char: Character = Character(Unicode.Scalar(UInt8(asciiCode)))
+            
+            if char.asciiValue! >= Character.zero.asciiValue! &&
+                char.asciiValue! <= Character.nine.asciiValue! {
+                numberOfAttributes *= 10
+                numberOfAttributes += Int(char.asciiValue! - Character.zero.asciiValue!)
+            } else {
+                break
+            }
+        }
+        
+        return (numberOfObjects, numberOfAttributes)
+    }
     
     public init(values: [[Int]]) {
         self.values = values
@@ -104,7 +184,7 @@ public class FormalContext {
     
     fileprivate func parseObjects(from values: [[Int]]) -> [BitSet] {
         return values.map({ BitSet(size: values.first!.count, values: $0.enumerated()
-                     .compactMap({ $0.element == 1 ? $0.offset : nil }))})
+            .compactMap({ $0.element == 1 ? $0.offset : nil }))})
     }
     
     fileprivate func parseAttributes(from values: [[Int]]) -> [BitSet] {

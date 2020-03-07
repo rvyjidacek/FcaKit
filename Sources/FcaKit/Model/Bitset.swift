@@ -370,14 +370,7 @@ Hashable, ExpressibleByArrayLiteral {
     
     // checks whether the two bitsets have the same content
     public static func == (lhs: BitSet, rhs: BitSet) -> Bool {
-        guard lhs.size == rhs.size else { return false }
-        
-        for i in 0..<lhs.wordcount {
-            if lhs.data[i] != rhs.data[i] { return false }
-        }
-        
-        return true
-        /*if lhs.wordcount > rhs.wordcount {
+        if lhs.wordcount > rhs.wordcount {
             for  i in rhs.wordcount..<lhs.wordcount  where lhs.data[i] != 0 {
                 return false
             }
@@ -390,7 +383,7 @@ Hashable, ExpressibleByArrayLiteral {
         for  i in 0..<mincount where rhs.data[i] != lhs.data[i] {
             return false
         }
-        return true*/
+        return true
     }
     
     // Set all items of set to 1
@@ -424,7 +417,6 @@ Hashable, ExpressibleByArrayLiteral {
                 return value
             }
         }
-        return nil
     }
     
     public func element(at index: Int) -> Int? {
@@ -459,7 +451,6 @@ Hashable, ExpressibleByArrayLiteral {
         var mask: UInt64 = 1
         mask = mask << count
         mask -= 1
-        //mask <<= 64 - count
         return mask
     }
 }

@@ -67,14 +67,12 @@ public class FCbO: FcaAlgorithm {
             y.setValues(to: b)
             y.intersection(with: yj)
             
-            
             if !b.contains(j) && x.isSubset(of: y) {
                 c.setValues(to: context!.attributes[j])
                 c.intersection(with: concept.objects)
                 
                 let d = context!.attributeSet()
                 context?.up(objects: c, into: d)
-                
                 
                 k.setValues(to: b)
                 k.intersection(with: yj)
