@@ -17,12 +17,20 @@ public class GreConD: BMFAlgorithm {
                                                      cols: context.attributeCount)
         }
     }
-        
+    
+//    public var counts: [FormalConcept: Int] = [:]
+//    var numberOfTestConcepts = 0
+//    var iteration = 0
+    
     public override func countFactors(in context: FormalContext) -> [FormalConcept] {
         self.context = context
-        let U = CartesianProduct(context: context)
-        var F: [FormalConcept] = []
-        var D = context.attributeSet()
+        let uncovered = CartesianProduct(context: context)
+        var factors: [FormalConcept] = []
+        var d = context.attributeSet()
+        
+//        counts = FCbO().count(in: context).reduce(into: [FormalConcept: Int]()) { (result, concept) in
+//            result[concept] = 0
+//        }
         
         let tmpCartesianProduct = CartesianProduct(rows: context.objectCount,
                                                    cols: context.attributeCount)
@@ -30,37 +38,56 @@ public class GreConD: BMFAlgorithm {
         
         let downD = context.objectSet()
         
-        while !(U.isEmpty) {
-            D.erase()
-            var V = 0
+        while !(uncovered.isEmpty) {
+            d.erase()
+            var v = 0
+//            numberOfTestConcepts = 0
+//            iteration += 1
             
-            while let j = findAttributeWhichMaximizeCoverage(D, V, U) {
-                D.insert(j)
+            while let j = findAttributeWhichMaximizeCoverage(d, v, uncovered) {
+                d.insert(j)
                 
-                D = context.downAndUp(attributes: D)
+                d = context.downAndUp(attributes: d)
 
-                context.down(attributes: D, into: downD)
+                context.down(attributes: d, into: downD)
                                 
                 tmpCartesianProduct.values.erase()
-                tmpCartesianProduct.insert(a: downD, b: D)
-                tmpCartesianProduct.intersection(U)
-
-                V = tmpCartesianProduct.count
+                tmpCartesianProduct.insert(a: downD, b: d)
+                tmpCartesianProduct.intersection(uncovered)
+                                
+                v = tmpCartesianProduct.count
             }
             
+//            print("\(iteration)=\(numberOfTestConcepts)")
+            
             let concept = FormalConcept(objects: BitSet(bitset: downD),
-                                        attributes: BitSet(bitset: D))
-            F.append(concept)
+                                        attributes: BitSet(bitset: d))
+            factors.append(concept)
             
             tmpCartesianProduct.values.erase()
             tmpCartesianProduct.insert(a: concept.objects, b: concept.attributes)
             
             for tuple in tmpCartesianProduct {
-                U.remove(tuple)
+                uncovered.remove(tuple)
             }
         }
 
-        return F
+        
+//        let x: [Int] = Set<Int>(counts.values).filter({ $0 != 0 }).sorted()
+//        var y = [Int](repeating: 0, count: x.count)
+//
+//        for i in 0..<x.count {
+//            y[i] = counts.values.filter({ $0 == x[i] }).count
+//        }
+//
+//
+//        print("Number of tested: \(counts.values.filter({ $0 != 0 }).count)")
+//        print("Number of untested: \(counts.values.filter({ $0 == 0 }).count)")
+//        print("Number of concepts: \(counts.count)")
+//        print(x.map({ "\($0)" }).joined(separator: ","))
+//        print(y.map({ "\($0)" }).joined(separator: ","))
+        
+        return factors
     }
     
     
@@ -95,6 +122,9 @@ public class GreConD: BMFAlgorithm {
             
         context.down(attributes: atributes, into: objects)
         context.up(objects: objects, into: atributes)
+        
+//        counts[FormalConcept(objects: BitSet(bitset: objects), attributes: BitSet(bitset: atributes))]! += 1
+//        numberOfTestConcepts += 1
         
         cartesianProduct.values.erase()
         cartesianProduct.insert(a: objects, b: atributes)

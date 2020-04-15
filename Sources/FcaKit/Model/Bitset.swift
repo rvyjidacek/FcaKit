@@ -640,3 +640,12 @@ extension BitSet: Codable {
         case data
     }
 }
+
+
+public func -(lhs: BitSet, rhs: BitSet) -> BitSet { lhs.differenced(rhs) }
+
+public func -(lhs: BitSet, rhs: Int) -> BitSet {
+    let result = BitSet(bitset: lhs)
+    result.remove(rhs)
+    return result
+}

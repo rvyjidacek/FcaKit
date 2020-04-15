@@ -16,6 +16,11 @@ extension Character {
     static let newLine: Character = Character(unicodeScalarLiteral: "\n")
 }
 
+public enum FileFormat {
+    case csv
+    case fimi
+}
+
 public class FormalContext {
     
     public var objectNames: [String] = []
@@ -81,25 +86,19 @@ public class FormalContext {
     
     /// 2D array with binary data. This value is useful for ELL algorithm of BMF
     public var values: Matrix = []
+
     
     public init(url: URL) throws {
-        let stream = InputStream(url: url)!
-        let csv = try CSVReader(stream: stream)
-        
-        var values: [[Int]] = []
-        
-        while let row = csv.next(){
-            let intRow = row.compactMap({ Int($0) })
+        try parseCSV(url)
+    }
+    
+    public init(path: String, format: FileFormat) throws {
+        switch format {
+        case .csv:
+            try parseCSV(URL(fileURLWithPath: path))
+        case .fimi: break
             
-            if !intRow.isEmpty {
-                values.append(intRow)
-            }
         }
-        
-        self.values = values
-        self.objects = parseObjects(from: values)
-        self.attributes = parseAttributes(from: values)
-        self.allAttributes.setAll()
     }
     
     public init(path: String) {
@@ -141,6 +140,26 @@ public class FormalContext {
             }
             
         }
+    }
+    
+    fileprivate func parseCSV(_ url: URL) throws {
+        let stream = InputStream(url: url)!
+        let csv = try CSVReader(stream: stream)
+        
+        var values: [[Int]] = []
+        
+        while let row = csv.next(){
+            let intRow = row.compactMap({ Int($0) })
+            
+            if !intRow.isEmpty {
+                values.append(intRow)
+            }
+        }
+        
+        self.values = values
+        self.objects = parseObjects(from: values)
+        self.attributes = parseAttributes(from: values)
+        self.allAttributes.setAll()
     }
     
     private func readContextSize(file: UnsafeMutablePointer<FILE>?)  -> (rows: Int, cols: Int) {
