@@ -45,13 +45,13 @@ public class FormalContext {
         return BitSet(size: attributeCount, values: 0..<attributeCount)
     }
     
-    public var density: Double {
+    public lazy var density: Double = {
         let numberOfOnes = values.reduce(into: 0) { result, row in
             result += row.reduce(into: 0, { result, item in result += item })
         }
         
         return (Double(numberOfOnes) / Double(objectCount * attributeCount)) * 100
-    }
+    }()
     
     public var allObjects: BitSet {
         return BitSet(size: objectCount, values: 0..<objectCount)
