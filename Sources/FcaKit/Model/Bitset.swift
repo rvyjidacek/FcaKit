@@ -11,6 +11,10 @@ Hashable, ExpressibleByArrayLiteral {
     public static var allocations = 0
     public static var deallocations = 0
     
+    public var debugDescription: String {
+        return "capacity: \(capacity), wordcount: \(wordcount), size: \(size), data: \(data)"
+    }
+    
     // copy construction
     public init (bitset other: BitSet) {
         BitSet.allocations += 1

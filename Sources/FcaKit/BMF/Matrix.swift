@@ -9,7 +9,11 @@
 
 public typealias Matrix = [[Int]]
 
-extension Matrix {
+public extension Matrix {
+    
+    init(rows: Int, cols: Int) {
+        self = [[Int]](repeating: [Int](repeating: 0, count: cols), count: rows)
+    }
     
     public var htmlDescription: String {
         var htmlString = "<table>"
