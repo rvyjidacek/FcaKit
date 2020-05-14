@@ -15,7 +15,7 @@ public extension Matrix {
         self = [[Int]](repeating: [Int](repeating: 0, count: cols), count: rows)
     }
     
-    public var htmlDescription: String {
+    var htmlDescription: String {
         var htmlString = "<table>"
         
         for row in 0..<count {
@@ -44,7 +44,7 @@ public extension Matrix {
     
     var size: (rows: Int, columns: Int) { (self.count, self.first?.count ?? 0) }
     
-    public func printCoverage(cover: [CartesianProduct.Tuple]) -> String {
+    func printCoverage(cover: [CartesianProduct.Tuple]) -> String {
         var htmlString = "<table>"
     
         for row in 0..<count {
