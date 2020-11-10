@@ -42,6 +42,11 @@ public class CbO: FcaAlgorithm {
     private var y: BitSet!
     private var down: BitSet!
     
+    
+    public var ups: [String: Int] = [:]
+    
+    public var downs: [String: Int] = [:]
+    
     func generateFrom(concept: FormalConcept, attribute: Attribute) {
         store(concept: concept)
         if concept.attributes == allAttributes || attribute >= context!.attributeCount {
@@ -54,6 +59,18 @@ public class CbO: FcaAlgorithm {
                 context!.down(attribute: j, into: down)
                 c.intersection(with: down)
                 context!.up(objects: c, into: d)
+                
+                if let count = downs["{\(j)}"] {
+                    downs["{\(j)}"] = count + 1
+                } else {
+                    downs["{\(j)}"] = 1
+                }
+                
+                if let count = ups[c.description] {
+                    ups[c.description] = count + 1
+                } else {
+                    ups[c.description] = 1
+                }
                 
                 self.closureCount += 1
                 x.addMany(0..<j)

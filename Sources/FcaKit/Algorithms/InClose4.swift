@@ -37,11 +37,9 @@ public class InClose4: FcaAlgorithm {
         let a = BitSet(bitset: concept.objects)
         let b = BitSet(bitset: concept.attributes)
         let p = BitSet(bitset: p)
-        //let yj = BitSet(size: context!.attributeCount)
         
         for j in y..<context!.attributeCount {
             if !b.contains(j) && !p.contains(j) {
-                //let c = context!.down(attribute: j)
                 c.setValues(to: context!.attributes[j])
                 c.intersection(with: a)
                 
@@ -56,7 +54,7 @@ public class InClose4: FcaAlgorithm {
                         
                         closureCount += 1
                         
-                        if yj == cUp { //context!.up(objects: c, upto: j) {
+                        if yj == cUp {
                             objectsQueue.enqueue(BitSet(bitset: c))
                             attributeQueue.enqueue(j)
                         }
