@@ -16,6 +16,8 @@ public class FormalConcept: CustomStringConvertible, Hashable, Codable {
     public let objects: BitSet
     public let attributes: BitSet
     
+    public var size: Double { Double(objects.count * attributes.count) }
+    
     public init(objects: BitSet, attributes: BitSet) {
         self.objects = objects
         self.attributes = attributes
