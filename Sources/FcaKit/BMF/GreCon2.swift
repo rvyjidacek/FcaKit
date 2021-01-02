@@ -19,6 +19,7 @@ public final class GreCon2: BMFAlgorithm {
         var factors: [FormalConcept] = []
         var coverage: [CoverageTuple] = conceptsArray.enumerated().map { ($0, $1, $1.attributes.count * $1.objects.count) }
         var cells = createCells(from: coverage)
+        var iteration = 0
         
         while !(coverage.filter({ $0.coverage > 0 }).isEmpty) {
             let maxValue = coverage.max(by: { a, b in a.coverage < b.coverage })!

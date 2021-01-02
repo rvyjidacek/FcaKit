@@ -28,10 +28,6 @@ public class GreConD: BMFAlgorithm {
         var factors: [FormalConcept] = []
         var d = context.attributeSet()
         
-        counts = FCbO().count(in: context).reduce(into: [FormalConcept: Int]()) { (result, concept) in
-            result[concept] = 0
-        }
-        
         let tmpCartesianProduct = CartesianProduct(rows: context.objectCount,
                                                    cols: context.attributeCount)
         
@@ -41,8 +37,6 @@ public class GreConD: BMFAlgorithm {
         while !(uncovered.isEmpty) {
             d.erase()
             var v = 0
-            numberOfTestConcepts = 0
-            iteration += 1
             
             while let j = findAttributeWhichMaximizeCoverage(d, v, uncovered) {
                 d.insert(j)
@@ -56,12 +50,8 @@ public class GreConD: BMFAlgorithm {
                 tmpCartesianProduct.intersection(uncovered)
                                 
                 v = tmpCartesianProduct.count
-                
-                let concept = FormalConcept(objects: BitSet(bitset: downD), attributes: BitSet(bitset: d))
-                counts[concept]? += 1
             }
             
-//            print("\(iteration)=\(numberOfTestConcepts)")
             
             let concept = FormalConcept(objects: BitSet(bitset: downD),
                                         attributes: BitSet(bitset: d))
@@ -74,21 +64,6 @@ public class GreConD: BMFAlgorithm {
                 uncovered.remove(tuple)
             }
         }
-
-        
-        let x: [Int] = Set<Int>(counts.values).filter({ $0 != 0 }).sorted()
-        var y = [Int](repeating: 0, count: x.count)
-
-        for i in 0..<x.count {
-            y[i] = counts.values.filter({ $0 == x[i] }).count
-        }
-
-        print("Number of tested: \(counts.values.filter({ $0 != 0 }).count)")
-        print("Number of untested: \(counts.values.filter({ $0 == 0 }).count)")
-        print("Number of concepts: \(counts.count)")
-        print("Maximal concept try: \(counts.values.max() ?? 0)")
-//        print(x.map({ "\($0)" }).joined(separator: ","))
-//        print(y.map({ "\($0)" }).joined(separator: ","))
         
         return factors
     }
@@ -125,9 +100,6 @@ public class GreConD: BMFAlgorithm {
             
         context.down(attributes: atributes, into: objects)
         context.up(objects: objects, into: atributes)
-        
-        counts[FormalConcept(objects: BitSet(bitset: objects), attributes: BitSet(bitset: atributes))]! += 1
-        numberOfTestConcepts += 1
         
         cartesianProduct.values.erase()
         cartesianProduct.insert(a: objects, b: atributes)
