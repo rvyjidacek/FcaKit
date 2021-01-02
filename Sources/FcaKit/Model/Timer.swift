@@ -10,11 +10,11 @@ import CoreFoundation
 
 public class Timer {
     
-    let startTime:CFAbsoluteTime
+    var startTime: CFAbsoluteTime!
     
-    var endTime:CFAbsoluteTime?
-    
-    public init() {
+    var endTime: CFAbsoluteTime?
+
+    public func start() {
         startTime = CFAbsoluteTimeGetCurrent()
     }
     
@@ -24,7 +24,7 @@ public class Timer {
         return duration!
     }
     
-    public var duration:CFAbsoluteTime? {
+    public var duration: CFAbsoluteTime? {
         if let endTime = endTime {
             return endTime - startTime
         } else {
