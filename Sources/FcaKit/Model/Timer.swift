@@ -13,6 +13,10 @@ public class Timer {
     var startTime: CFAbsoluteTime!
     
     var endTime: CFAbsoluteTime?
+    
+    public init () {
+        
+    }
 
     public func start() {
         startTime = CFAbsoluteTimeGetCurrent()
