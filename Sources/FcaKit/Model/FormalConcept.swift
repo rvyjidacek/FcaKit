@@ -8,39 +8,10 @@
 
 import Foundation
 
-public func == (lhs: FormalConcept, rhs: FormalConcept) -> Bool {
-    return lhs.attributes == rhs.attributes && lhs.objects == rhs.objects
-}
+public class FormalConcept: Bicluster {
 
-public class FormalConcept: CustomStringConvertible, Hashable, Codable {
-    public let objects: BitSet
-    public let attributes: BitSet
-    
-    public var size: Double { Double(objects.count * attributes.count) }
-    
-    public init(objects: BitSet, attributes: BitSet) {
-        self.objects = objects
-        self.attributes = attributes
-    }
-    
-    public func hash(into hasher: inout Hasher) {
+    public override func hash(into hasher: inout Hasher) {
         hasher.combine(objects.hashValue)
-    }
-    
-    public var description: String {
-        return "⟨\(objects),\(attributes)⟩"
-    }
-    
-    public var latexDescription: String {
-        return "$\\langle\(objects),\(attributes)\\rangle$".replacingOccurrences(of: "{", with: "\\{").replacingOccurrences(of: "}", with: "\\}")
-    }
-    
-    public lazy var tuples: CartesianProduct = {
-        return objects.cartesianProduct(with: attributes)
-    }()
-    
-    public var cartesianProduct: CartesianProduct {
-           CartesianProduct(a: objects, b: attributes)
     }
     
 }
