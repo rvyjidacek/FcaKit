@@ -15,6 +15,14 @@ Hashable, ExpressibleByArrayLiteral {
         return "capacity: \(capacity), wordcount: \(wordcount), size: \(size), data: \(data)"
     }
     
+    public var bitArrayValues: [UInt64] {
+        var values = [UInt64](repeating: 0, count: capacity)
+        for i in 0..<capacity {
+            values[i] = data[i]
+        }
+        return values
+    }
+    
     // copy construction
     public init (bitset other: BitSet) {
         BitSet.allocations += 1
@@ -91,8 +99,6 @@ Hashable, ExpressibleByArrayLiteral {
     }
     
     
-    
-    
     // initializing from array literal
     public init(arrayLiteral elements: Int...) {
         var mymax = 0
@@ -145,6 +151,12 @@ Hashable, ExpressibleByArrayLiteral {
             sum = sum &+ w.nonzeroBitCount
         }
         return sum
+    }
+    
+    public func setBitArrayValues(_ values: [UInt64]) {
+        for i in 0..<capacity {
+            data[i] = values[i]
+        }
     }
     
     // add a value to the bitset, all values must be non-negative

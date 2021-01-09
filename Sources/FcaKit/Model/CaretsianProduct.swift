@@ -61,6 +61,10 @@ public class CartesianProduct: Sequence, IteratorProtocol, CustomStringConvertib
         values.insert(index(of: value))
     }
     
+    public func contains(_ value: Tuple) -> Bool {
+        return values.contains(index(of: value))
+    }
+    
     public func intersection(_ other: CartesianProduct) {
         values.intersection(with: other.values)
     }
@@ -94,6 +98,7 @@ public class CartesianProduct: Sequence, IteratorProtocol, CustomStringConvertib
         colsCount = b.size
         fillValues(a, b)
     }
+    
     
     public func next() -> (row: Int, col: Int)? {
         if let value = bitsetIterator.next() { return tuple(for: value) }

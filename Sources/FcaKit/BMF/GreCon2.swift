@@ -8,18 +8,17 @@
 
 public final class GreCon2: BMFAlgorithm {
     
-    fileprivate typealias CoverageTuple = (conceptIndex: Int, concept: FormalConcept, coverage: Int)
+    fileprivate typealias CoverageTuple = (conceptIndex: Int, concept: Bicluster, coverage: Int)
     
     public override func countFactors(in context: FormalContext) -> [FormalConcept] {
-        return countFactorization(using: FCbO().count(in: context), in: context)
+        return countFactorization(using: FCbO().count(in: context), in: context) as! [FormalConcept]
     }
     
-    public func countFactorization(using conceptsArray: [FormalConcept], in context: FormalContext) -> [FormalConcept] {
+    public func countFactorization(using conceptsArray: [Bicluster], in context: FormalContext) -> [Bicluster] {
         _ = super.countFactors(in: context)
-        var factors: [FormalConcept] = []
+        var factors: [Bicluster] = []
         var coverage: [CoverageTuple] = conceptsArray.enumerated().map { ($0, $1, $1.attributes.count * $1.objects.count) }
         var cells = createCells(from: coverage)
-        var iteration = 0
         
         while !(coverage.filter({ $0.coverage > 0 }).isEmpty) {
             let maxValue = coverage.max(by: { a, b in a.coverage < b.coverage })!
