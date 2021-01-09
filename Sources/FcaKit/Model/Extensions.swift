@@ -45,7 +45,7 @@ extension Array {
 public var subsets: [Int: [Int]] = [:]
 
 #if os(Linux)
-    typealias CFAbsoluteTime = Double
+    public typealias CFAbsoluteTime = Double
 #endif
 
 public typealias MeasureResult<T> = (averageTime: CFAbsoluteTime,
