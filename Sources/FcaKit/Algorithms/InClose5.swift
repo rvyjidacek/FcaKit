@@ -7,9 +7,9 @@
 //
 
 
-class InClose5: FcaAlgorithm {
+public class InClose5: FcaAlgorithm {
     
-    override var name: String {
+    override public var name: String {
         return "In-Close5"
     }
     
@@ -28,18 +28,22 @@ class InClose5: FcaAlgorithm {
     private func computeConcepts(from concept: FormalConcept, attribute y: Attribute, p: BitSet, n: BitSet) {
         let objectsQueue = Queue<BitSet>()
         let attributeQueue = Queue<Attribute>()
+        
+        let a = BitSet(bitset: concept.objects)
+        let b = BitSet(bitset: concept.attributes)
+        
         let p = BitSet(bitset: p)
         let n = BitSet(bitset: n)
         
         for j in y..<context!.attributeCount {
-            if !concept.attributes.contains(j) && !p.contains(j) && !n.contains(j) {
+            if !b.contains(j) && !p.contains(j) && !n.contains(j) {
                 let c = context!.down(attribute: j)
-                c.intersection(with: concept.objects)
+                c.intersection(with: a)
                 
                 if !c.isEmpty {
-                    if c == concept.objects {
-                        concept.attributes.insert(j)
-                    } else if concept.attributes.intersected(context!.atributeSet(withValues: 0..<j)) == context!.up(objects: c, upto: j) {
+                    if c == a {
+                        b.insert(j)
+                    } else if b.intersected(context!.atributeSet(withValues: 0..<j)) == context!.up(objects: c, upto: j) {
                         objectsQueue.enqueue(c)
                         attributeQueue.enqueue(j)
                     } else if context!.up(objects: c, upto: j).element()! < y {
@@ -54,7 +58,7 @@ class InClose5: FcaAlgorithm {
         
         while !objectsQueue.isEmpty {
             let j = attributeQueue.dequeue()!
-            let d = BitSet(bitset: concept.attributes)
+            let d = BitSet(bitset: b)
             d.insert(j)
             
             computeConcepts(from: FormalConcept(objects: objectsQueue.dequeue()!, attributes: d),
