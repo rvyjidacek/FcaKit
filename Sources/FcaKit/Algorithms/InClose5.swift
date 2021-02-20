@@ -17,13 +17,26 @@ public class InClose5: FcaAlgorithm {
         self.context = context
         self.concepts = []
         
+        self.yj = context.attributeSet()
+        self.cUp = context.attributeSet()
+        self.c = context.objectSet()
+        
         computeConcepts(from: FormalConcept(objects: context.allObjects,
                                             attributes: context.attributeSet()),
                         attribute: 0,
                         p: context.attributeSet(),
                         n: context.attributeSet())
+        
+        if context.down(attributes: context.allAttributes).isEmpty {
+            concepts.append(FormalConcept(objects: context.objectSet(), attributes: context.allAttributes))
+        }
+        
         return concepts
     }
+    
+    private var yj: BitSet!
+    private var cUp: BitSet!
+    private var c: BitSet!
     
     private func computeConcepts(from concept: FormalConcept, attribute y: Attribute, p: BitSet, n: BitSet) {
         let objectsQueue = Queue<BitSet>()
@@ -37,17 +50,25 @@ public class InClose5: FcaAlgorithm {
         
         for j in y..<context!.attributeCount {
             if !b.contains(j) && !p.contains(j) && !n.contains(j) {
-                let c = context!.down(attribute: j)
+                c.setValues(to: context!.down(attribute: j))
                 c.intersection(with: a)
                 
                 if !c.isEmpty {
+                    context!.up(objects: c, upto: j, into: cUp)
+                    yj.addMany(0..<j)
+                    yj.intersection(with: b)
+                    
                     if c == a {
                         b.insert(j)
-                    } else if b.intersected(context!.atributeSet(withValues: 0..<j)) == context!.up(objects: c, upto: j) {
-                        objectsQueue.enqueue(c)
+                    } else if yj == cUp {
+                        objectsQueue.enqueue(BitSet(bitset: c))
                         attributeQueue.enqueue(j)
-                    } else if context!.up(objects: c, upto: j).element()! < y {
-                        n.insert(j)
+                    } else {
+                        cUp.difference(b)
+                        
+                        if cUp.element()! < y {
+                            n.insert(j)
+                        }
                     }
                 } else {
                     p.insert(j)

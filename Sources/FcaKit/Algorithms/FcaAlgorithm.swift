@@ -43,7 +43,5 @@ public class FcaAlgorithm {
             concepts.append(concept)
         }
         conceptsCount += 1
-        
-        print(concept)
     }
 }

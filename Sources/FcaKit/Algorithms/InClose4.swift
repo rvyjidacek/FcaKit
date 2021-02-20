@@ -34,6 +34,7 @@ public class InClose4: FcaAlgorithm {
     private func computeConcepts(from concept: FormalConcept, y: Attribute, p: BitSet, level: Int = 0) {
         let objectsQueue = Queue<BitSet>()
         let attributeQueue = Queue<Attribute>()
+        
         let a = BitSet(bitset: concept.objects)
         let b = BitSet(bitset: concept.attributes)
         let p = BitSet(bitset: p)
