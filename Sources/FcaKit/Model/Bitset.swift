@@ -1,3 +1,5 @@
+import Foundation
+
 
 // a class that can be used as an efficient set container for non-negative integers
 public final class BitSet: Sequence, Equatable, CustomStringConvertible,
@@ -468,6 +470,23 @@ Hashable, ExpressibleByArrayLiteral {
         mask = mask << count
         mask -= 1
         return mask
+    }
+    
+    
+    public func max() -> Int? {
+        var index = 0
+        
+        // Find Highest nonzero part of the set
+        while data[index] != 0 { index += 1 }
+        
+        let highestBit = (64 - data[index].leadingZeroBitCount) - 1
+        
+        if highestBit >= 0 {
+            return  (pow(2, highestBit) as NSDecimalNumber).intValue
+        }
+        
+        return nil
+        
     }
 }
 

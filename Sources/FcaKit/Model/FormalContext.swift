@@ -35,6 +35,7 @@ public class FormalContext: Equatable {
                 lhs.objectConcepts == rhs.objectConcepts
     }
     
+    public lazy var cartesianProduct: CartesianProduct = { CartesianProduct(context: self) }()
     
     public var objectNames: [String] = []
     
@@ -301,6 +302,10 @@ public class FormalContext: Equatable {
     
     public func up(object: Object) -> BitSet {
         return BitSet(bitset: objects[Int(object)])
+    }
+    
+    public func up(object: Object, into: BitSet) {
+        into.setValues(to: objects[Int(object)])
     }
     
     public func down(attribute: Attribute) -> BitSet {

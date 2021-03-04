@@ -14,12 +14,22 @@ public func == (lhs: Bicluster, rhs: Bicluster) -> Bool {
 public class Bicluster: CustomStringConvertible, Hashable, Codable {
     public var objects: BitSet!
     public var attributes: BitSet!
+    public var context: FormalContext?
     
     public var size: Double { Double(objects.count * attributes.count) }
     
-    public init(objects: BitSet, attributes: BitSet) {
+    public var coverageSize: Int!
+    
+    public init(objects: BitSet, attributes: BitSet, context: FormalContext? = nil) {
         self.objects = objects
         self.attributes = attributes
+        self.context = context
+        self.coverageSize = self.cartesianProduct.count
+    }
+    
+    enum CodingKeys: String, CodingKey {
+        case objects
+        case attributes
     }
     
     public init?(coding: String) {
@@ -27,6 +37,7 @@ public class Bicluster: CustomStringConvertible, Hashable, Codable {
         guard !(sets.isEmpty) else { return nil }
         self.objects = self.decodeBitset(code: sets[0].description)
         self.attributes = self.decodeBitset(code: sets[1].description)
+        self.context = nil
     }
     
     public func hash(into hasher: inout Hasher) {
@@ -42,13 +53,17 @@ public class Bicluster: CustomStringConvertible, Hashable, Codable {
         return "$\\langle\(objects!),\(attributes!)\\rangle$".replacingOccurrences(of: "{", with: "\\{").replacingOccurrences(of: "}", with: "\\}")
     }
     
-    public lazy var tuples: CartesianProduct = {
-        return objects.cartesianProduct(with: attributes)
-    }()
-    
     public var cartesianProduct: CartesianProduct {
-           CartesianProduct(a: objects, b: attributes)
+        let cartesianProduct = CartesianProduct(a: objects, b: attributes)
+        
+        if let context = self.context {
+            cartesianProduct.intersection(context.cartesianProduct)
+        }
+        
+        return cartesianProduct
     }
+    
+    public var fullCartesianProduct: CartesianProduct { CartesianProduct(a: objects, b: attributes) }
     
     public func export() -> String {
         // Export Structure

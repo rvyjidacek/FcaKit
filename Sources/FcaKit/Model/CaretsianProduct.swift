@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class CartesianProduct: Sequence, IteratorProtocol, CustomStringConvertible {
+public class CartesianProduct: Sequence, IteratorProtocol, CustomStringConvertible, Hashable, Equatable {
     
     public typealias Tuple = (row: Int, col: Int)
     
@@ -24,7 +24,6 @@ public class CartesianProduct: Sequence, IteratorProtocol, CustomStringConvertib
     fileprivate lazy var bitsetIterator: BitsetIterator = { values.makeIterator() }()
     
     public var colsCount: Int
-
     
     public init(a: BitSet, b: BitSet) {
         values = BitSet(size: a.count * b.count)
@@ -133,4 +132,13 @@ public class CartesianProduct: Sequence, IteratorProtocol, CustomStringConvertib
             }
         }
     }
+    
+    public func hash(into hasher: inout Hasher) {
+        values.hash(into: &hasher)
+    }
+    
+    public static func == (lhs: CartesianProduct, rhs: CartesianProduct) -> Bool {
+        return lhs.values == rhs.values
+    }
+    
 }
