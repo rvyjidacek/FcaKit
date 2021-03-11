@@ -23,7 +23,7 @@ public class Bicluster: CustomStringConvertible, Hashable, Codable {
     public init(objects: BitSet, attributes: BitSet, context: FormalContext? = nil) {
         self.objects = objects
         self.attributes = attributes
-        //self.context = context
+       // self.context = context
         self.coverageSize = self.cartesianProduct.count
     }
     
