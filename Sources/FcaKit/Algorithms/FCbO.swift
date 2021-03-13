@@ -48,6 +48,7 @@ public class FCbO: FcaAlgorithm {
     
     func fastGenerateFrom(concept: FormalConcept, attribute: Attribute, attributeSets: UpdatableSet) {
         store(concept: concept)
+
         
         if concept.attributes == context!.allAttributes || attribute >= context!.attributeCount {
             return

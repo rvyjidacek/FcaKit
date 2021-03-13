@@ -25,14 +25,14 @@ public class FormalContext: Equatable {
     
     public static func == (lhs: FormalContext, rhs: FormalContext) -> Bool {
         return  lhs.objectCount == rhs.objectCount &&
-                lhs.attributeCount == rhs.attributeCount &&
-                lhs.allObjects == rhs.allObjects &&
-                lhs.allAttributes == rhs.allAttributes &&
-                lhs.objects == rhs.objects &&
-                lhs.attributes == rhs.attributes &&
-                lhs.values == rhs.values &&
-                lhs.attributeConcepts == rhs.attributeConcepts && // TODO: - Find out why these values are not equal
-                lhs.objectConcepts == rhs.objectConcepts
+            lhs.attributeCount == rhs.attributeCount &&
+            lhs.allObjects == rhs.allObjects &&
+            lhs.allAttributes == rhs.allAttributes &&
+            lhs.objects == rhs.objects &&
+            lhs.attributes == rhs.attributes &&
+            lhs.values == rhs.values &&
+            lhs.attributeConcepts == rhs.attributeConcepts && // TODO: - Find out why these values are not equal
+            lhs.objectConcepts == rhs.objectConcepts
     }
     
     public lazy var cartesianProduct: CartesianProduct = { CartesianProduct(context: self) }()
@@ -40,6 +40,7 @@ public class FormalContext: Equatable {
     public var objectNames: [String] = []
     
     public var attributeNames: [String] = []
+
     
     /// Bitset array where object[x] contains set of attributes for object x.
     public var objects: [BitSet] = []
@@ -111,18 +112,20 @@ public class FormalContext: Equatable {
         
         return matrix
     }()
-
+    
+    private var permutation: [Int] = []
+    
     
     public init(url: URL) throws {
         try parseCSV(url)
     }
     
-    public init(url: URL, format: FileFormat) throws {
+    public init(url: URL, format: FileFormat = .fimi, sort: Bool = false) throws {
         switch format {
         case .csv:
             try parseCSV(url)
         case .fimi:
-            parseFimi(path: url.path)
+            parseFimi(path: url.path, sort: sort)
         }
     }
     
@@ -138,85 +141,100 @@ public class FormalContext: Equatable {
         
         attributes[attribute]!.insert(line)
     }
-     
-     public func parseFimi(path: String) {
-         
-         // READ CONTEXT SIZE
-         let size = readContextSize(path: path)
-         var line = 0
-         let file = fopen(path, "r")
-         var attribute = 0
-         
-         objects = (0..<size.rows).map { _ in BitSet(size: size.cols) }
-         attributes = (0..<size.cols).map { _ in BitSet(size: size.rows) }
-         
-         // READ CONTEXT VALUES
-         
-         while feof(file) == 0 {
-             let asciiCode = fgetc(file)
-             if asciiCode < 0 { return }
-             
-             let char: Character = Character(Unicode.Scalar(UInt8(asciiCode)))
-             
-             if char.asciiValue! == Character.space.asciiValue! {
-                 objects[line].insert(attribute)
-                 attributes[attribute].insert(line)
-                 attribute = 0
-                 continue
-             }
-             
-             if char.asciiValue! >= Character.zero.asciiValue! &&
-                 char.asciiValue! <= Character.nine.asciiValue! {
-                 attribute *= 10
-                 attribute += Int(char.asciiValue! - Character.zero.asciiValue!)
-             }
-             
-             if char.asciiValue! == Character.newLine.asciiValue! {
-                 objects[line].insert(attribute)
-                 attributes[attribute].insert(line)
-                 attribute = 0
-                 line += 1
-             }
-             
-         }
-     }
-     
-     private func readContextSize(path: String)  -> (rows: Int, cols: Int) {
-         let file = fopen(path, "r")
-         var numberOfObjects = 0
-         var maxAttribute = 0
-         var attribute = 0
-         
-         while feof(file) == 0 {
-             let asciiCode = fgetc(file)
-             if asciiCode < 0 { return (numberOfObjects, maxAttribute + 1) }
-             
-             let char: Character = Character(Unicode.Scalar(UInt8(asciiCode)))
-             
-             if char.asciiValue! == Character.space.asciiValue! {
-                 if attribute > maxAttribute { maxAttribute = attribute }
-                 attribute = 0
-                 continue
-             }
-             
-             if char.asciiValue! >= Character.zero.asciiValue! &&
-                 char.asciiValue! <= Character.nine.asciiValue! {
-                 attribute *= 10
-                 attribute += Int(char.asciiValue! - Character.zero.asciiValue!)
-             }
-             
-             if char.asciiValue! == Character.newLine.asciiValue! {
-                 if attribute > maxAttribute { maxAttribute = attribute }
-                 attribute = 0
-                 numberOfObjects += 1
-             }
-         }
-         
-         fclose(file)
-         
-         return (numberOfObjects, maxAttribute + 1)
-     }
-     
+    
+    public func parseFimi(path: String, sort: Bool) {
+        
+        // READ CONTEXT SIZE
+        let size = readContextSize(path: path)
+        var line = 0
+        let file = fopen(path, "r")
+        var attribute = 0
+        
+        objects = (0..<size.rows).map { _ in BitSet(size: size.cols) }
+        attributes = (0..<size.cols).map { _ in BitSet(size: size.rows) }
+        
+        // READ CONTEXT VALUES
+        
+        while feof(file) == 0 {
+            let asciiCode = fgetc(file)
+            if asciiCode < 0 { break }
+            
+            let char: Character = Character(Unicode.Scalar(UInt8(asciiCode)))
+            
+            if char.asciiValue! == Character.space.asciiValue! {
+                objects[line].insert(attribute)
+                attributes[attribute].insert(line)
+                attribute = 0
+                continue
+            }
+            
+            if char.asciiValue! >= Character.zero.asciiValue! &&
+                char.asciiValue! <= Character.nine.asciiValue! {
+                attribute *= 10
+                attribute += Int(char.asciiValue! - Character.zero.asciiValue!)
+            }
+            
+            if char.asciiValue! == Character.newLine.asciiValue! {
+                objects[line].insert(attribute)
+                attributes[attribute].insert(line)
+                attribute = 0
+                line += 1
+            }
+            
+        }
+        
+        // sort attributes by occurency
+        if sort {
+            let sorted = attributes.enumerated().sorted { (lhs, rhs) -> Bool in lhs.element.count > rhs.element.count }
+            attributes = sorted.map { $0.element }
+            permutation = sorted.map { $0.offset }
+        } else {
+            permutation = [Int](0..<attributes.count)
+        }
+        
+    }
+    
+    private func readSortedFimi(path: String) {
+        let contextSize = readContextSize(path: path)
+        let values = (0..<contextSize.rows).map { [Int]() }
+    }
+    
+    private func readContextSize(path: String)  -> (rows: Int, cols: Int) {
+        let file = fopen(path, "r")
+        var numberOfObjects = 0
+        var maxAttribute = 0
+        var attribute = 0
+        
+        while feof(file) == 0 {
+            let asciiCode = fgetc(file)
+            if asciiCode < 0 { return (numberOfObjects, maxAttribute + 1) }
+            
+            let char: Character = Character(Unicode.Scalar(UInt8(asciiCode)))
+            
+            if char.asciiValue! == Character.space.asciiValue! {
+                if attribute > maxAttribute { maxAttribute = attribute }
+                attribute = 0
+                continue
+            }
+            
+            if char.asciiValue! >= Character.zero.asciiValue! &&
+                char.asciiValue! <= Character.nine.asciiValue! {
+                attribute *= 10
+                attribute += Int(char.asciiValue! - Character.zero.asciiValue!)
+            }
+            
+            if char.asciiValue! == Character.newLine.asciiValue! {
+                if attribute > maxAttribute { maxAttribute = attribute }
+                attribute = 0
+                numberOfObjects += 1
+            }
+        }
+        
+        fclose(file)
+        
+        return (numberOfObjects, maxAttribute + 1)
+    }
+    
     
     fileprivate func parseCSV(_ url: URL) throws {
         let stream = InputStream(url: url)!
@@ -279,7 +297,7 @@ public class FormalContext: Equatable {
     
     fileprivate func parseObjects(from values: [[Int]]) -> [BitSet] {
         return values.map({ BitSet(size: values.first!.count, values: $0.enumerated()
-            .compactMap({ $0.element == 1 ? $0.offset : nil }))})
+                                    .compactMap({ $0.element == 1 ? $0.offset : nil }))})
     }
     
     fileprivate func parseAttributes(from values: [[Int]]) -> [BitSet] {
