@@ -120,12 +120,12 @@ public class FormalContext: Equatable {
         try parseCSV(url)
     }
     
-    public init(url: URL, format: FileFormat = .fimi, sort: Bool = false) throws {
+    public init(url: URL, format: FileFormat = .fimi) throws {
         switch format {
         case .csv:
             try parseCSV(url)
         case .fimi:
-            parseFimi(path: url.path, sort: sort)
+            parseFimi(path: url.path)
         }
     }
     
@@ -142,7 +142,7 @@ public class FormalContext: Equatable {
         attributes[attribute]!.insert(line)
     }
     
-    public func parseFimi(path: String, sort: Bool) {
+    public func parseFimi(path: String) {
         
         // READ CONTEXT SIZE
         let size = readContextSize(path: path)
@@ -180,24 +180,9 @@ public class FormalContext: Equatable {
                 attribute = 0
                 line += 1
             }
-            
         }
-        
-        // sort attributes by occurency
-        if sort {
-            let sorted = attributes.enumerated().sorted { (lhs, rhs) -> Bool in lhs.element.count > rhs.element.count }
-            attributes = sorted.map { $0.element }
-            permutation = sorted.map { $0.offset }
-        } else {
-            permutation = [Int](0..<attributes.count)
-        }
-        
     }
-    
-    private func readSortedFimi(path: String) {
-        let contextSize = readContextSize(path: path)
-        let values = (0..<contextSize.rows).map { [Int]() }
-    }
+
     
     private func readContextSize(path: String)  -> (rows: Int, cols: Int) {
         let file = fopen(path, "r")
