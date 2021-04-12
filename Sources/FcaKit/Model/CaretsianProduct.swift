@@ -64,8 +64,9 @@ public class CartesianProduct: Sequence, IteratorProtocol, CustomStringConvertib
         return values.contains(index(of: value))
     }
     
-    public func intersection(_ other: CartesianProduct) {
+    public func intersection(_ other: CartesianProduct) -> CartesianProduct {
         values.intersection(with: other.values)
+        return self
     }
     
     public func intersected(_ other: CartesianProduct) -> CartesianProduct {

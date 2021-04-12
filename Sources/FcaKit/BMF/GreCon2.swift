@@ -17,7 +17,9 @@ public final class GreCon2: BMFAlgorithm {
     public func countFactorization(using conceptsArray: [Bicluster], in context: FormalContext) -> [Bicluster] {
         _ = super.countFactors(in: context)
         var factors: [Bicluster] = []
-        var coverage: [CoverageTuple] = conceptsArray.enumerated().map { ($0, $1, $1.coverageSize) }
+        let cartesianProduct = CartesianProduct(context: context)
+        //var coverage: [CoverageTuple] = conceptsArray.enumerated().map { ($0, $1, $1.coverageSize) }
+        var coverage: [CoverageTuple] = conceptsArray.enumerated().map { ($0, $1, $1.cartesianProduct.intersection(cartesianProduct).count) }
         var cells = createCells(from: coverage)
         
         while !(coverage.filter({ $0.coverage > 0 }).isEmpty) {
