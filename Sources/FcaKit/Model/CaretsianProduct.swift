@@ -56,6 +56,10 @@ public class CartesianProduct: Sequence, IteratorProtocol, CustomStringConvertib
         }
     }
     
+    public func erase() {
+        values.erase()
+    }
+    
     public func insert(_ value: Tuple) {
         values.insert(index(of: value))
     }
@@ -64,9 +68,8 @@ public class CartesianProduct: Sequence, IteratorProtocol, CustomStringConvertib
         return values.contains(index(of: value))
     }
     
-    public func intersection(_ other: CartesianProduct) -> CartesianProduct {
+    public func intersection(_ other: CartesianProduct) {
         values.intersection(with: other.values)
-        return self
     }
     
     public func intersected(_ other: CartesianProduct) -> CartesianProduct {
@@ -99,6 +102,9 @@ public class CartesianProduct: Sequence, IteratorProtocol, CustomStringConvertib
         fillValues(a, b)
     }
     
+    public func difference(_ other: CartesianProduct) {
+        values.difference(other.values)
+    }
     
     public func next() -> (row: Int, col: Int)? {
         if let value = bitsetIterator.next() { return tuple(for: value) }
