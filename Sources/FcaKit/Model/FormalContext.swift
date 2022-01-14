@@ -370,8 +370,8 @@ open class FormalContext: Equatable {
         
         for object in 0..<objectCount {
             for attribute in 0..<attributeCount {
-                let objectConcept = objectConcept(for: object)
-                let attributeConcept = attributeConcept(for: attribute)
+                let objectConcept = self.objectConcept(for: object)
+                let attributeConcept = self.attributeConcept(for: attribute)
                 
                 if objectConcept < attributeConcept {
                     intervals.insert(.init(object: object,
