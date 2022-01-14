@@ -21,7 +21,43 @@ public enum FileFormat {
     case fimi
 }
 
-public class FormalContext: Equatable {
+public struct Interval: Hashable, Equatable, CustomStringConvertible {
+    var object: Object
+    var attribute: Attribute
+    var lowerBound: FormalConcept
+    var upperBound: FormalConcept
+    
+    public var description: String { "[\(lowerBound), \(upperBound)] - <\(object), \(attribute)>" }
+     
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(lowerBound)
+        hasher.combine(upperBound)
+        
+    }
+}
+
+public func ==(left: Interval, right: Interval) -> Bool {
+    return left.object == right.object &&
+    left.attribute == right.attribute &&
+    left.lowerBound == right.lowerBound &&
+    left.upperBound == right.upperBound
+}
+
+public func <(left: Interval, right: Interval) -> Bool {
+    return right.lowerBound < left.lowerBound && left.upperBound < right.upperBound
+}
+
+open class FormalContext: Equatable {
+    
+    struct Entry: Hashable {
+        var object: Int
+        var attribute: Int
+        
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(object)
+            hasher.combine(attribute)
+        }
+    }
     
     public static func == (lhs: FormalContext, rhs: FormalContext) -> Bool {
         return  lhs.objectCount == rhs.objectCount &&
@@ -297,6 +333,68 @@ public class FormalContext: Equatable {
             result.append(objects)
         }
         return result
+    }
+    
+    public func essentialElements() -> Matrix {
+        var essentialMatrix = Matrix(rows: objectCount,
+                                     cols: attributeCount)
+        
+        var intervals: [Interval?] = self.intervals()
+        
+        for minimalCandidateIndex in 0..<intervals.count {
+            if let minimalCandidate = intervals[minimalCandidateIndex] {
+
+                for intervalIndex in 0..<intervals.count {
+                    if let interval = intervals[intervalIndex] {
+                        guard !(interval == minimalCandidate) else { continue }
+                        // Incomparable
+                        if !(interval < minimalCandidate) && !(minimalCandidate < interval) {
+                            continue
+                        } else if interval < minimalCandidate {
+                            intervals[minimalCandidateIndex] = nil
+                        }
+                    }
+                }
+            }
+        }
+        
+        for essentialElement in intervals.compactMap({ $0 == nil ? nil : (object: $0!.object, attribute: $0!.attribute) }) {
+            essentialMatrix[essentialElement.object][essentialElement.attribute] = 1
+        }
+        
+        return essentialMatrix
+    }
+    
+    private func intervals() -> [Interval] {
+        var intervals: Set<Interval> = []
+        
+        for object in 0..<objectCount {
+            for attribute in 0..<attributeCount {
+                let objectConcept = objectConcept(for: object)
+                let attributeConcept = attributeConcept(for: attribute)
+                
+                if objectConcept < attributeConcept {
+                    intervals.insert(.init(object: object,
+                                           attribute: attribute,
+                                           lowerBound: objectConcept,
+                                           upperBound: attributeConcept))
+                }
+            }
+        }
+        
+        return [Interval](intervals)
+    }
+    
+    public func attributeConcept(for attribute: Attribute) -> FormalConcept {
+        let objects = down(attribute: attribute)
+        let attributes = up(objects: objects)
+        return FormalConcept(objects: objects, attributes: attributes)
+    }
+    
+    public func objectConcept(for object: Object) -> FormalConcept {
+        let attributes = up(object: object)
+        let objects = down(attributes: attributes)
+        return FormalConcept(objects: objects, attributes: attributes)
     }
     
     public func up(objects: BitSet) -> BitSet {

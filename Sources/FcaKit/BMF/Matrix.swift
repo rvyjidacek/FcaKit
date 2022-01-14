@@ -30,6 +30,19 @@ public extension Matrix {
         return htmlString
     }
     
+    var fimi: String {
+        var fimiDesription = ""
+        
+        for row in self {
+            var columns = row.enumerated()
+                             .compactMap({ $0.element == 1 ? $0.offset.description : nil })
+                             .joined(separator: " ")
+            fimiDesription.append(columns)
+            fimiDesription.append("\n")
+        }
+        return fimiDesription
+    }
+    
     var tuples: Set<Tuple> {
         var tuples: Set<Tuple> = []
         for row in 0..<count {

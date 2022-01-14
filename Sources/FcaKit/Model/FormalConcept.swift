@@ -8,6 +8,10 @@
 
 import Foundation
 
+public func <(left: FormalConcept, right: FormalConcept) -> Bool {
+    return left.objects.isSubset(of: right.objects)
+}
+
 public class FormalConcept: Bicluster {
 
     public override func hash(into hasher: inout Hasher) {

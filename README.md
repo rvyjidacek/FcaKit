@@ -23,7 +23,7 @@ Formal concept analysis (FCA) is a principled way of deriving a concept hierarch
 6. Parallel Fast Close by One (PFCbO)
 7. ELL
 8. In-Close2
-9. In-Close4
+9. In-Close5
 
 Benchamrks can be found [here](Documentation/Benchmarks.md).
 
