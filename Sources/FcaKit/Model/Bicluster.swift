@@ -65,6 +65,12 @@ public class Bicluster: CustomStringConvertible, Hashable, Codable {
     
     public var fullCartesianProduct: CartesianProduct { CartesianProduct(a: objects, b: attributes) }
     
+    public func cartesianProduct(into cartesianProduct: CartesianProduct) {
+        if let context = self.context {
+            cartesianProduct.intersection(context.cartesianProduct)
+        }
+    }
+    
     public func export() -> String {
         // Export Structure
         // <objects-size>;<objects-values>-<attributes-size>;<attributes-values>
@@ -81,4 +87,6 @@ public class Bicluster: CustomStringConvertible, Hashable, Codable {
         bitset.setBitArrayValues(bitArrayValues)
         return bitset
     }
+    
+    
 }

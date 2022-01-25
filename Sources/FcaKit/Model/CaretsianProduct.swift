@@ -147,5 +147,4 @@ public class CartesianProduct: Sequence, IteratorProtocol, CustomStringConvertib
     public static func == (lhs: CartesianProduct, rhs: CartesianProduct) -> Bool {
         return lhs.values == rhs.values
     }
-    
 }
