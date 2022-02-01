@@ -151,11 +151,6 @@ open class FormalContext: Equatable {
     
     private var permutation: [Int] = []
     
-    
-    public init(url: URL) throws {
-        try parseCSV(url)
-    }
-    
     public init(url: URL, format: FileFormat = .fimi) throws {
         parseFimi(path: url.path)
     }
