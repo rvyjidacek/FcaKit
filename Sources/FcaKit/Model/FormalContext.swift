@@ -157,12 +157,7 @@ open class FormalContext: Equatable {
     }
     
     public init(url: URL, format: FileFormat = .fimi) throws {
-        switch format {
-        case .csv:
-            try parseCSV(url)
-        case .fimi:
-            parseFimi(path: url.path)
-        }
+        parseFimi(path: url.path)
     }
     
     fileprivate func insertAttribute(_ line: Int, _ attribute: Int, _ attributes: inout [Int : BitSet]) {
