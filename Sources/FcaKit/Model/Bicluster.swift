@@ -32,7 +32,7 @@ public class Bicluster: CustomStringConvertible, Hashable, Codable {
         case attributes
     }
     
-    public init?(coding: String) {
+    public required init?(coding: String) {
         let sets = coding.split(separator: "-")
         guard !(sets.isEmpty) else { return nil }
         self.objects = self.decodeBitset(code: sets[0].description)
