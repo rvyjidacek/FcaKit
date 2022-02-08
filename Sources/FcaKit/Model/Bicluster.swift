@@ -38,6 +38,7 @@ public class Bicluster: CustomStringConvertible, Hashable, Codable {
         self.objects = self.decodeBitset(code: sets[0].description)
         self.attributes = self.decodeBitset(code: sets[1].description)
         self.context = nil
+        self.coverageSize = Int(size)
     }
     
     public func hash(into hasher: inout Hasher) {
