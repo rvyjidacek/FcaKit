@@ -8,16 +8,16 @@
 
 public final class GreCon2: BMFAlgorithm {
     
-    fileprivate typealias CoverageTuple = (conceptIndex: Int, concept: Bicluster, coverage: Int)
+    fileprivate typealias CoverageTuple<T: Bicluster> = (conceptIndex: Int, concept: T, coverage: Int)
     
     public override func countFactors(in context: FormalContext) -> [FormalConcept] {
-        return countFactorization(using: FCbO().count(in: context), in: context) as! [FormalConcept]
+        return countFactorization(using: FCbO().count(in: context), in: context)
     }
     
-    public func countFactorization(using conceptsArray: [Bicluster], in context: FormalContext) -> [Bicluster] {
+    public func countFactorization<T: Bicluster>(using conceptsArray: [T], in context: FormalContext) -> [T] {
         _ = super.countFactors(in: context)
-        var factors: [Bicluster] = []
-        var coverage: [CoverageTuple] = conceptsArray.enumerated().map { ($0, $1, $1.coverageSize) }
+        var factors: [T] = []
+        var coverage: [CoverageTuple<T>] = conceptsArray.enumerated().map { ($0, $1, $1.coverageSize) }
         var cells = createCells(from: coverage)
         
         while !(coverage.filter({ $0.coverage > 0 }).isEmpty) {
@@ -53,7 +53,7 @@ public final class GreCon2: BMFAlgorithm {
         }
     }
     
-    fileprivate func createCells(from tuples: [CoverageTuple]) -> [[Int]?] {
+    fileprivate func createCells<T>(from tuples: [CoverageTuple<T>]) -> [[Int]?] {
         var cells = [[Int]?](repeating: [], count: context.objectCount * context.attributeCount)
         
         for coverageTuple in tuples {
