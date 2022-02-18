@@ -17,6 +17,4 @@ public class FormalConcept: Bicluster {
     public override func hash(into hasher: inout Hasher) {
         hasher.combine(objects.hashValue)
     }
-    
 }
-
