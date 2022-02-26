@@ -83,7 +83,7 @@ public class Bicluster: CustomStringConvertible, Hashable, Codable {
     private func decodeBitset(code: String) -> BitSet {
         let setValues = code.split(separator: ";")
         let bitsetSize = Int(setValues[0])!
-        let bitArrayValues = setValues[1].split(separator: " ").compactMap { UInt64($0) }
+        let bitArrayValues = setValues[1].split(separator: " ").map { UInt64($0)! }
         let bitset = BitSet(size: bitsetSize)
         bitset.setBitArrayValues(bitArrayValues)
         return bitset
