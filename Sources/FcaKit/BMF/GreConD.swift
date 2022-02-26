@@ -7,7 +7,7 @@
 //
 
 
-open public class GreConD: BMFAlgorithm {
+open class GreConD: BMFAlgorithm {
     
     override var context: FormalContext! {
         didSet {
