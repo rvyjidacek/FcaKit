@@ -5,9 +5,7 @@
 //  Created by Roman Vyjídáček on 15/10/2019.
 //
 
-
-public class BMFAlgorithm {
-    
+public open class BMFAlgorithm {
     
     public var name: String {
         let thisType = type(of: self)
