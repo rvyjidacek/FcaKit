@@ -103,7 +103,7 @@ open class GreConD: BMFAlgorithm {
         cartesianProduct.insert(a: objects, b: atributes)
         cartesianProduct.intersection(tuples)
         
-        counts[FormalConcept(objects: BitSet(bitset: objects), attributes: BitSet(bitset: atributes))]! = 1
+        counts[FormalConcept(objects: BitSet(bitset: objects), attributes: BitSet(bitset: atributes))] = 1
             
         return cartesianProduct
     }
