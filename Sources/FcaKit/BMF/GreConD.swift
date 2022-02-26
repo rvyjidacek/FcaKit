@@ -18,6 +18,8 @@ open class GreConD: BMFAlgorithm {
         }
     }
     
+    public var counts: [FormalConcept: Int] = [:]
+    
     public override func countFactors(in context: FormalContext) -> [FormalConcept] {
         self.context = context
         let uncovered = CartesianProduct(context: context)
@@ -65,7 +67,8 @@ open class GreConD: BMFAlgorithm {
     }
     
     
-    func findAttributeWhichMaximizeCoverage(_ D: BitSet, _ V: Int, _ U: CartesianProduct) -> Attribute? {
+    
+    private func findAttributeWhichMaximizeCoverage(_ D: BitSet, _ V: Int, _ U: CartesianProduct) -> Attribute? {
         var maxValue = 0
         var maxAttribute: Int? = nil
         
@@ -89,7 +92,7 @@ open class GreConD: BMFAlgorithm {
     
     public var concepts = Set<FormalConcept>()
     
-    func setPlus(of attributeSet: BitSet, with attribute: Attribute, tuples: CartesianProduct) -> CartesianProduct {
+    private func setPlus(of attributeSet: BitSet, with attribute: Attribute, tuples: CartesianProduct) -> CartesianProduct {
         atributes.setValues(to: attributeSet)
         atributes.insert(attribute)
             
@@ -99,6 +102,8 @@ open class GreConD: BMFAlgorithm {
         cartesianProduct.values.erase()
         cartesianProduct.insert(a: objects, b: atributes)
         cartesianProduct.intersection(tuples)
+        
+        counts[FormalConcept(objects: BitSet(bitset: objects), attributes: BitSet(bitset: atributes))]! += 1
             
         return cartesianProduct
     }
