@@ -25,10 +25,12 @@ public class CartesianProduct: Sequence, IteratorProtocol, CustomStringConvertib
     
     public var colsCount: Int
     
+    public var size: Int
+    
     public init(a: BitSet, b: BitSet) {
         values = BitSet(size: a.count * b.count)
         colsCount = b.size
-        
+        size = a.count * b.count
         fillValues(a, b)
         
     }
@@ -36,15 +38,18 @@ public class CartesianProduct: Sequence, IteratorProtocol, CustomStringConvertib
     public init(cartesianProduct: CartesianProduct) {
         values = BitSet(bitset: cartesianProduct.values)
         colsCount = cartesianProduct.colsCount
+        size = cartesianProduct.size
     }
     
     public init(rows: Int, cols: Int) {
         values = BitSet(size: rows * cols)
         colsCount = cols
+        size = rows * cols
     }
     
     public init(context: FormalContext) {
         values = BitSet(size: context.objectCount * context.attributeCount)
+        size = context.objectCount * context.attributeCount
         colsCount = context.values.first?.count ?? 0
                 
         for row in 0..<context.values.size.rows {
@@ -99,6 +104,13 @@ public class CartesianProduct: Sequence, IteratorProtocol, CustomStringConvertib
     
     public func insert(a: BitSet, b: BitSet) {
         colsCount = b.size
+        
+        if size < a.count * b.count {
+            let newSize = a.count * b.count
+            self.values = BitSet(size: newSize)
+            self.size = newSize
+        }
+        
         fillValues(a, b)
     }
     
