@@ -103,13 +103,8 @@ public class CartesianProduct: Sequence, IteratorProtocol, CustomStringConvertib
     }
     
     public func insert(a: BitSet, b: BitSet) {
-        colsCount = b.size
-        
-        if size < a.count * b.count {
-            let newSize = a.count * b.count
-            self.values = BitSet(size: newSize)
-            self.size = newSize
-        }
+        self.colsCount = b.size
+        self.size = a.count * b.count
         
         fillValues(a, b)
     }
