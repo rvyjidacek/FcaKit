@@ -78,8 +78,8 @@ public class CartesianProduct: Sequence, IteratorProtocol, CustomStringConvertib
     }
     
     public func intersected(_ other: CartesianProduct) -> CartesianProduct {
-        let result = CartesianProduct(cartesianProduct: other)
-        result.intersection(self)
+        let result = CartesianProduct(cartesianProduct: self)
+        result.intersection(other)
         return result
     }
     
@@ -103,7 +103,6 @@ public class CartesianProduct: Sequence, IteratorProtocol, CustomStringConvertib
     }
     
     public func insert(a: BitSet, b: BitSet) {
-        self.colsCount = b.size
         self.size = a.count * b.count
         
         fillValues(a, b)
