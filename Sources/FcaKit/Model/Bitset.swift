@@ -25,6 +25,11 @@ Hashable, ExpressibleByArrayLiteral {
         return values
     }
     
+    public var characteristicVector: [UInt8]  {
+        return (0...size).map { element in self.contains(element) ? 1 : 0 }
+    }
+    
+    
     // copy construction
     public init (bitset other: BitSet) {
         BitSet.allocations += 1
