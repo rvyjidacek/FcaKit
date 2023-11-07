@@ -84,7 +84,13 @@ public class FCbO: FcaAlgorithm {
                 closureCount += 1
                 
                 if  k == l {
-                    conceptQueue.enqueue(FormalConcept(objects: BitSet(bitset: c), attributes: d))
+                    conceptQueue.enqueue(
+                        FormalConcept(
+                            objects: BitSet(bitset: c),
+                            attributes: d,
+                            context: context
+                        )
+                    )
                     attributeQueue.enqueue(j + 1)
                 } else {
                     setMy.set(index: j, set: d)
