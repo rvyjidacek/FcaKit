@@ -26,12 +26,6 @@ public final class GreCon2: BMFAlgorithm {
         var coverage: [CoverageTuple<T>] = conceptsArray.enumerated().map { ($0, $1, $1.coverageSize) }
         var cells = createCells(from: coverage, context: context)
         
-        // cost = (#1 - #0) 
-        // TODO: Do stredy matice A a B pro vsechny datasety OA-Biclusters + Factors
-        // Pridat do slozek README.md aby bylo jasne co je ve slozkach za vysledky.
-        // pronajem macu limit do 50 000.
-        // Poslat grafy pro ruzne weight #1 - pocet prekrytych 0 / celkovy pocet jednicek, pro hustotu 0.95 +-
-        
         while !(coverage.filter({ $0.coverage > 0 }).isEmpty) {
             let maxValue = coverage.max(by: { a, b in
                 (a.coverage - coveredZeros(bicluster: a.concept, in: context)) < (b.coverage - coveredZeros(bicluster: b.concept, in: context))

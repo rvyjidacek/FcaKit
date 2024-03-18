@@ -18,11 +18,9 @@ open class GreConD: BMFAlgorithm {
         }
     }
     
-    public var counts: [FormalConcept: Int] = [:]
-    
-    public override func countFactors(in context: FormalContext) -> [FormalConcept] {
+    public func countFactors(in context: FormalContext, factorsCount: Int) -> [FormalConcept] {
         self.context = context
-        let uncovered = CartesianProduct(context: context)
+        let uncovered = context.cartesianProduct //CartesianProduct(context: context)
         var factors: [FormalConcept] = []
         var d = context.attributeSet()
         
@@ -55,6 +53,8 @@ open class GreConD: BMFAlgorithm {
                                         attributes: BitSet(bitset: d))
             factors.append(concept)
             
+            if factorsCount > 0 && factors.count == factorsCount { return factors }
+            
             tmpCartesianProduct.values.erase()
             tmpCartesianProduct.insert(a: concept.objects, b: concept.attributes)
             
@@ -65,17 +65,19 @@ open class GreConD: BMFAlgorithm {
         
         return factors
     }
-    
-    
+        
+    public override func countFactors(in context: FormalContext) -> [FormalConcept] {
+        return countFactors(in: context, factorsCount: 0)
+    }
     
     private func findAttributeWhichMaximizeCoverage(_ D: BitSet, _ V: Int, _ U: CartesianProduct) -> Attribute? {
         var maxValue = 0
         var maxAttribute: Int? = nil
         
-        for j in 0..<context.attributeCount { //context.allAttributes {
+        for j in 0..<context.attributeCount {
             if !(D.contains(j)) {
                 let dPlusJ = setPlus(of: D, with: j, tuples: U)
-                if dPlusJ.count > V && dPlusJ.count > maxValue { //dPlusJ.count > maxValue {
+                if dPlusJ.count > V && dPlusJ.count > maxValue {
                     maxValue = dPlusJ.count
                     maxAttribute = j
                 }
@@ -84,7 +86,6 @@ open class GreConD: BMFAlgorithm {
         
         return maxAttribute
     }
-    
     
     private var atributes: BitSet!
     private var objects: BitSet!
@@ -102,9 +103,7 @@ open class GreConD: BMFAlgorithm {
         cartesianProduct.values.erase()
         cartesianProduct.insert(a: objects, b: atributes)
         cartesianProduct.intersection(tuples)
-        
-        counts[FormalConcept(objects: BitSet(bitset: objects), attributes: BitSet(bitset: atributes))] = 1
-            
+                    
         return cartesianProduct
     }
 }

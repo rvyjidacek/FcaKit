@@ -155,6 +155,11 @@ open class FormalContext: Equatable {
         parseFimi(path: url.path)
     }
     
+    public init(context: FormalContext, copyData: Bool = true) {
+        self.objects = copyData ? context.objects.map { BitSet(bitset: $0) } : context.objects
+        self.attributes = copyData ? context.attributes.map { BitSet(bitset: $0) } : context.attributes
+    }
+    
     fileprivate func insertAttribute(_ line: Int, _ attribute: Int, _ attributes: inout [Int : BitSet]) {
         if line >= objects.count {
             objects.append(BitSet())
@@ -375,6 +380,9 @@ open class FormalContext: Equatable {
         return [Interval](intervals)
     }
     
+    open func attributes(for object: Object) -> BitSet { self.objects[object] }
+    open func objects(for attribute: Attribute) -> BitSet { self.attributes[attribute] }
+    
     public func attributeConcept(for attribute: Attribute) -> FormalConcept {
         let objects = down(attribute: attribute)
         let attributes = up(objects: objects)
@@ -392,19 +400,23 @@ open class FormalContext: Equatable {
     }
     
     public func up(object: Object) -> BitSet {
-        return BitSet(bitset: objects[Int(object)])
+//        return BitSet(bitset: objects[Int(object)])
+        return BitSet(bitset: attributes(for: object))
     }
     
     public func up(object: Object, into: BitSet) {
-        into.setValues(to: objects[Int(object)])
+//        into.setValues(to: objects[Int(object)])
+        into.setValues(to: attributes(for: object))
     }
     
     public func down(attribute: Attribute) -> BitSet {
-        return BitSet(bitset: attributes[Int(attribute)])
+//        return BitSet(bitset: attributes[Int(attribute)])
+        return BitSet(bitset: objects(for: attribute))
     }
     
     public func down(attribute: Attribute, into: BitSet) {
-        into.setValues(to: attributes[Int(attribute)])
+//        into.setValues(to: attributes[Int(attribute)])
+        into.setValues(to: objects(for: attribute))
     }
     
     
@@ -412,7 +424,8 @@ open class FormalContext: Equatable {
         let result = allObjects
         
         for attribute in attributes {
-            result.intersection(with: self.attributes[Int(attribute)])
+//            result.intersection(with: self.attributes[Int(attribute)])
+            result.intersection(with: objects(for: attribute))
             if result.isEmpty { break }
         }
         return result
@@ -422,7 +435,8 @@ open class FormalContext: Equatable {
         into.addMany(0..<objectCount)
         
         for attribute in attributes {
-            into.intersection(with: self.attributes[Int(attribute)])
+//            into.intersection(with: self.attributes[Int(attribute)])
+            into.intersection(with: objects(for: attribute))
             if into.isEmpty { break }
         }
     }
@@ -435,7 +449,8 @@ open class FormalContext: Equatable {
         let result = BitSet(size: attributeCount, values: 0..<j)
         
         for object in objects {
-            result.intersection(with: self.objects[Int(object)])
+//            result.intersection(with: self.objects[Int(object)])
+            result.intersection(with: attributes(for: object))
             if result.isEmpty { break }
         }
         return result
@@ -445,7 +460,8 @@ open class FormalContext: Equatable {
         let result = BitSet(size: attributeCount, values: 0..<attributeCount)
         
         for object in objects {
-            result.intersection(with: self.objects[Int(object)])
+//            result.intersection(with: self.objects[Int(object)])
+            result.intersection(with: attributes(for: Object(object)))
             if result.isEmpty { break }
         }
         return result
@@ -455,7 +471,8 @@ open class FormalContext: Equatable {
         into.addMany(0..<j)
         
         for object in objects {
-            into.intersection(with: self.objects[Int(object)])
+//            into.intersection(with: self.objects[Int(object)])
+            into.intersection(with: attributes(for: object))
             if into.isEmpty { break }
         }
     }
@@ -464,7 +481,8 @@ open class FormalContext: Equatable {
         into.addMany(0..<attributeCount)
         
         for object in objects {
-            into.intersection(with: self.objects[Int(object)])
+//            into.intersection(with: self.objects[Int(object)])
+            into.intersection(with: attributes(for: object))
             if into.isEmpty { break }
         }
     }
