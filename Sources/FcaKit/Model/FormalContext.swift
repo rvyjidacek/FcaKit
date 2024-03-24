@@ -179,7 +179,7 @@ open class FormalContext: Equatable {
         let size = readContextSize(path: path)
         var line = 0
         let file = fopen(path, "r")
-        var attribute = 0
+        var attribute = -1
         
         objects = (0..<size.rows).map { _ in BitSet(size: size.cols) }
         attributes = (0..<size.cols).map { _ in BitSet(size: size.rows) }
@@ -189,27 +189,32 @@ open class FormalContext: Equatable {
         while feof(file) == 0 {
             let asciiCode = fgetc(file)
             if asciiCode < 0 { break }
-            
+    
             let char: Character = Character(Unicode.Scalar(UInt8(asciiCode)))
-            
+    
+            if char.asciiValue! == Character.newLine.asciiValue! {
+                if attribute >= 0 {
+                    objects[line].insert(attribute)
+                    attributes[attribute].insert(line)
+                }
+                attribute = -1
+                line += 1
+                continue
+            }
+    
+            if attribute < 0 { attribute = 0 }
+    
             if char.asciiValue! == Character.space.asciiValue! {
                 objects[line].insert(attribute)
                 attributes[attribute].insert(line)
                 attribute = 0
                 continue
             }
-            
+    
             if char.asciiValue! >= Character.zero.asciiValue! &&
                 char.asciiValue! <= Character.nine.asciiValue! {
                 attribute *= 10
                 attribute += Int(char.asciiValue! - Character.zero.asciiValue!)
-            }
-            
-            if char.asciiValue! == Character.newLine.asciiValue! {
-                objects[line].insert(attribute)
-                attributes[attribute].insert(line)
-                attribute = 0
-                line += 1
             }
         }
     }
